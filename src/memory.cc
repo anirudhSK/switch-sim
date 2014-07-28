@@ -14,12 +14,7 @@ Memory::Memory(const uint16_t s_num_banks, const uint8_t s_mem_ops_per_tick)
 }
 
 Address Memory::write(const Cell & cell) {
-  uint16_t i = 0;
-  for (i = 0; i < num_banks_; i++) {
-    if (!memory_banks_.at(i).ops_depleted()) {
-      return memory_banks_.at(i).write(cell);
-    }
-  }
-  assert(false);
-  return Address(0, 0);
+  auto ret = memory_banks_.at(bank_cursor_).write(cell);
+  bank_cursor_ = (bank_cursor_ + 1) % num_banks_;
+  return ret;
 }

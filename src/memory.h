@@ -16,7 +16,10 @@ class Memory {
   Cell read(const Address & addr) {
     return memory_banks_.at(addr.bank_id()).read(addr);
   }
-  void reset(void) { for (auto &x : memory_banks_) x.reset(); }
+  void reset(void) {
+    bank_cursor_ = 0;
+    for (auto &x : memory_banks_) x.reset();
+  }
 
  private:
   /* Number of READ/WRITE ops per tick */
@@ -27,6 +30,9 @@ class Memory {
 
   /* Vector of banks */
   std::vector<MemoryBank> memory_banks_;
+
+  /* Bank cursor, which bank to write next? */
+  uint16_t bank_cursor_ {0};
 };
 
 #endif  // SRC_MEMORY_H_
