@@ -7,5 +7,4 @@
 typedef boost::random::mt19937 PRNG;
 
 extern PRNG & global_PRNG();
- 
 #endif  // SRC_RANDOM_H_

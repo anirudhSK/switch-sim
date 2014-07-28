@@ -8,6 +8,7 @@
 class Cell {
  public:
   Cell(const uint16_t s_output, const uint16_t s_input);
+  Cell() {}
   uint16_t output(void) const { return output_; }
   uint16_t input(void) const { return input_; }
  private:
