@@ -8,20 +8,20 @@ MemoryBank::MemoryBank(const uint8_t s_ops_per_tick, const uint16_t s_bank_id)
       bank_id_(s_bank_id) {}
 
 Address MemoryBank::write(const Cell & cell) {
+  assert(op_count_ < mem_ops_per_tick_);
   auto write_addr = Address(bank_id_, ++write_count_);
   assert(cells_.find(write_addr) == cells_.end());
   cells_[write_addr] = cell;
   op_count_++;
-  assert(op_count_ <= mem_ops_per_tick_);
   return write_addr;
 }
 
 Cell MemoryBank::read(const Address & addr) {
+  assert(op_count_ < mem_ops_per_tick_);
   auto it = cells_.find(addr);
   assert(it != cells_.end());
   Cell cell = it->second;
   cells_.erase(it);
   op_count_++;
-  assert(op_count_ <= mem_ops_per_tick_);
   return cell;
 }
