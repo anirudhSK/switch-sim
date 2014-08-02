@@ -6,7 +6,11 @@
 template <class NextHop>
 void TrafficGenerator::tick(const uint64_t tickno, NextHop & next) {
   for (uint16_t i = 0; i < num_ports_; i++) {
-    Cell cell(i, distribution_(prng_));
+    uint16_t output_port = i;
+    while (output_port == i) {
+      output_port = distribution_(prng_);
+    }
+    Cell cell(i, output_port);
     next.accept(tickno, cell);
   }
 }
