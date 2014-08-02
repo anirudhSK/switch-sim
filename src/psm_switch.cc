@@ -17,7 +17,7 @@ PSMSwitch::PSMSwitch(const uint16_t s_num_ports,
 }
 
 void PSMSwitch::accept(const uint64_t tickno __attribute__((unused)),
-                         const Cell & cell) {
+                       const Cell & cell) {
   Address address = cell_memory_.write(cell);
   output_queues_.at(cell.output()).push(address);
 }
