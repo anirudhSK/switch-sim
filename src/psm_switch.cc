@@ -24,6 +24,7 @@ void PSMSwitch::accept(const uint64_t tickno __attribute__((unused)),
 
 void PSMSwitch::tick(const uint64_t tickno __attribute__((unused))) {
   for (auto &x : output_queues_) {
+    if (x.empty()) continue;
     auto cell = cell_memory_.read(x.front());
     stats_[std::make_pair(cell.input(), cell.output())]++;
     x.pop();
