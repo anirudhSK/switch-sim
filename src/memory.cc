@@ -13,8 +13,6 @@ Memory::Memory(const uint16_t s_num_banks, const uint8_t s_mem_ops_per_tick)
   }
 }
 
-Address Memory::write(const Cell & cell) {
-  auto ret = memory_banks_.at(bank_cursor_).write(cell);
-  bank_cursor_ = (bank_cursor_ + 1) % num_banks_;
-  return ret;
+Address Memory::write(const Cell & cell, const uint16_t bank_cursor) {
+  return memory_banks_.at(bank_cursor).write(cell);
 }

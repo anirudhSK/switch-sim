@@ -12,12 +12,11 @@
 class Memory {
  public:
   Memory(const uint16_t s_num_banks, const uint8_t s_mem_ops_per_tick);
-  Address write(const Cell & cell);
+  Address write(const Cell & cell, const uint16_t bank_cursor);
   Cell read(const Address & addr) {
     return memory_banks_.at(addr.bank_id()).read(addr);
   }
   void reset(void) {
-    bank_cursor_ = 0;
     for (auto &x : memory_banks_) x.reset();
   }
 
@@ -30,9 +29,6 @@ class Memory {
 
   /* Vector of banks */
   std::vector<MemoryBank> memory_banks_;
-
-  /* Bank cursor, which bank to write next? */
-  uint16_t bank_cursor_ {0};
 };
 
 #endif  // SRC_MEMORY_H_
