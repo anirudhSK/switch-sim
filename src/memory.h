@@ -19,6 +19,7 @@ class Memory {
   void reset(void) {
     for (auto &x : memory_banks_) x.reset();
   }
+  uint8_t mem_ops_per_tick( void ) const { return mem_ops_per_tick_; }
 
  private:
   /* Number of READ/WRITE ops per tick */
