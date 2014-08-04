@@ -36,7 +36,7 @@ void PSMSwitch::reset(const uint64_t tickno) {
             current_departure_counters_.end(),
             0);
 
-  /* Clear out departures that are no longer *future* (http://stackoverflow.com/a/16597048) */
+  // Clear out departures that are no longer *future* (http://stackoverflow.com/a/16597048)
   for (auto it = future_departure_counters_.begin(); it != future_departure_counters_.end(); ) {
     if (it->first <= tickno) {
       it = future_departure_counters_.erase(it);
@@ -47,7 +47,7 @@ void PSMSwitch::reset(const uint64_t tickno) {
 
   /* Set current_departure_counters_ */
   for (uint16_t i = 0; i < output_queues_.size(); i++) {
-    if (! output_queues_.at(i).empty()) {
+    if (!output_queues_.at(i).empty()) {
       current_departure_counters_.at(output_queues_.at(i).front().bank_id())++;
       assert(current_departure_counters_.at(output_queues_.at(i).front().bank_id()) <=
              cell_memory_.mem_ops_per_tick());
@@ -87,7 +87,7 @@ uint16_t PSMSwitch::find_free_bank(const uint64_t departure_time) const {
     /* Check for conflicts in the current time slot */
     auto already_scheduled_ops = current_departure_counters_.at(i) +
                                  current_arrival_counters_.at(i);
-    assert (already_scheduled_ops <= cell_memory_.mem_ops_per_tick());
+    assert(already_scheduled_ops <= cell_memory_.mem_ops_per_tick());
     if (already_scheduled_ops == cell_memory_.mem_ops_per_tick()) continue;
 
     /* Check for conflicts when you depart */
@@ -97,7 +97,7 @@ uint16_t PSMSwitch::find_free_bank(const uint64_t departure_time) const {
     } else {
       already_scheduled_future_departures = 0;
     }
-    assert (already_scheduled_future_departures <= cell_memory_.mem_ops_per_tick());
+    assert(already_scheduled_future_departures <= cell_memory_.mem_ops_per_tick());
     if (already_scheduled_future_departures == cell_memory_.mem_ops_per_tick()) continue;
 
     /* Doesn't conflict */
