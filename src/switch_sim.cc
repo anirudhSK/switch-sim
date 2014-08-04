@@ -24,7 +24,7 @@ int main(const int argc, const char* argv[]) {
   for (uint64_t i = 0; i < ticks; i++) {
     traf_gen.tick(i, psm_switch);
     psm_switch.tick(i);
-    psm_switch.reset();
+    psm_switch.reset(i);
   }
   psm_switch.output_stats();
 }
