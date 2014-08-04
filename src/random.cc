@@ -7,6 +7,8 @@
 #include "src/random.h"
 
 PRNG & global_PRNG(void) {
-  static PRNG generator(time(nullptr) ^ getpid());
+  unsigned int current_time = static_cast<unsigned int>(time(nullptr));
+  unsigned int pid  = getpid();
+  static PRNG generator(current_time ^ pid);
   return generator;
 }

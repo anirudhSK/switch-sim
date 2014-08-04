@@ -13,7 +13,7 @@ AC_PROG_RANLIB
 
 # Add picky CXXFLAGS
 CPPFLAGS="-std=c++11 -pthread"
-PICKY_CXXFLAGS="-pedantic -Wall -Wextra -Weffc++ -Werror -fno-default-inline"
+PICKY_CXXFLAGS="-pedantic -Wconversion -Wall -Wextra -Weffc++ -Werror -fno-default-inline"
 AC_SUBST([PICKY_CXXFLAGS])
 
 # Checks for header files.

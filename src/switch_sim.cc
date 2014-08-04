@@ -13,11 +13,11 @@ int main(const int argc, const char* argv[]) {
     printf("Usage: %s num_ports seed ticks num_banks ops_per_tick\n", argv[0]);
     exit(0);
   }
-  const uint16_t num_ports = std::stoi(std::string(argv[1]));
-  const uint8_t seed = std::stoi(std::string(argv[2]));
-  const uint64_t ticks = std::stoi(std::string(argv[3]));
-  const uint16_t num_banks = std::stoi(std::string(argv[4]));
-  const uint8_t ops_per_tick = std::stoi(std::string(argv[5]));
+  const uint16_t num_ports   = static_cast<uint16_t>(std::stoul(std::string(argv[1])));
+  const uint8_t seed         = static_cast<uint8_t>(std::stoul(std::string(argv[2])));
+  const uint64_t ticks       = std::stoull(std::string(argv[3]));
+  const uint16_t num_banks   = static_cast<uint16_t>(std::stoul(std::string(argv[4])));
+  const uint8_t ops_per_tick = static_cast<uint8_t>(std::stoul(std::string(argv[5])));
 
   PSMSwitch psm_switch(num_ports, num_banks, ops_per_tick);
   TrafficGenerator traf_gen(num_ports, seed);
