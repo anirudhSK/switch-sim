@@ -7,10 +7,15 @@ import numpy.random
 import sys
 
 TICKS = 1000000
-LEAFS = 10
-SPINES = 10
-LINE_RATE = int(sys.argv[1])
+PORTS = int(sys.argv[1])
+LEAFS = PORTS
+SPINES = PORTS
+LINE_RATE = PORTS
 # i.e. rate relative to interconnect links
+# Keslassy's paper sets the line rates to R
+# and the interconnect rates to R/N, we set
+# R to N, so that R/N = 1
+# (so that we don't deal with frac. rates)
 ARRIVAL_RATE = float(sys.argv[2])
 
 leaf_nodes = range(LEAFS)
@@ -76,5 +81,6 @@ for current_tick in range(0, TICKS):
       assert(current_tick >= tx_pkt[0]);
       output_del_acc[i] = output_del_acc[i] + (current_tick - tx_pkt[0]);
 
+# Output stats
 for i in range (0, LEAFS):
-   print i, output_pkt_count[i] * 1.0 / TICKS, "pkt/tick", output_del_acc[i] * 1.0 /output_pkt_count[i], "ticks"
+   print i, (output_pkt_count[i] * 1.0 / (TICKS * LINE_RATE)), "pkt/tick", (output_del_acc[i] * 1.0 /output_pkt_count[i]) * LINE_RATE, "ticks"
