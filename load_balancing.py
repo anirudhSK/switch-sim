@@ -85,5 +85,16 @@ for current_tick in range(0, TICKS):
 
 # Output stats
 for i in range (0, LEAFS):
-   print i, (output_pkt_count[i] * 1.0 / (TICKS * LINE_RATE)), "pkt/tick",\
+  print i, (output_pkt_count[i] * 1.0 / (TICKS * LINE_RATE)), "pkt/tick",\
          (output_del_acc[i] * 1.0 /output_pkt_count[i]) * LINE_RATE, "ticks"
+
+# Queue stats
+for i in range (0, LEAFS):
+  print "Queue size at leaf_inputs", i, len(leaf_inputs[i])
+
+for i in range (0, SPINES):
+  for j in range(0, LEAFS):
+    print "VOQ(",i,",",j,")",len(spine_voqs[i][j])
+
+for i in range (0, LEAFS):
+  print "Queue size at leaf outputs", i, len(leaf_outputs[i])
