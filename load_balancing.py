@@ -40,11 +40,14 @@ for current_tick in range(0, TICKS):
       leaf_inputs[i].append((current_tick, random.randint(0, LEAFS - 1)));
 
   # Move them from leaf_inputs to spine_outputs
+  # Use round-robin to go through all spines
+  spine_cursor=0
   for i in range(0, LEAFS):
     if (len(leaf_inputs[i]) == 0):
       continue
     pkt_to_bounce = leaf_inputs[i].pop(0); 
-    spine_outputs[random.randint(0, SPINES - 1)].append(pkt_to_bounce);
+    spine_outputs[spine_cursor].append(pkt_to_bounce);
+    spine_cursor = (spine_cursor + 1) % SPINES
 
   # Move them from spine_outputs to leaf_outputs
   for i in range(0, SPINES):
