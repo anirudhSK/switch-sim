@@ -43,6 +43,8 @@ for current_tick in range(0, TICKS):
   # Generate packets at leaf_inputs
   for i in range(0, LEAFS):
     pkts_this_slot = numpy.random.poisson(ARRIVAL_RATE * LINE_RATE);
+    while (pkts_this_slot > LINE_RATE):
+      pkts_this_slot = numpy.random.poisson(ARRIVAL_RATE * LINE_RATE);
     for j in range(0, pkts_this_slot):
       leaf_inputs[i].append((current_tick, random.randint(0, LEAFS - 1)));
 
