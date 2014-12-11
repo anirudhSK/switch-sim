@@ -58,6 +58,9 @@ for current_tick in range(0, TICKS):
       spine_voqs[spine_cursor][pkt_to_bounce[1]].append(pkt_to_bounce);
       spine_cursor = (spine_cursor + 1) % SPINES
 
+  for i in range(0, LEAFS):
+    assert(len(leaf_inputs[i]) == 0)
+
   # Move them from spine_voqs to leaf_outputs
   # VOQs implicitly do round-robin
   # full mesh from spines to leafs
