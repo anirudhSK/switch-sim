@@ -84,4 +84,5 @@ for current_tick in range(0, TICKS):
 
 # Output stats
 for i in range (0, LEAFS):
-   print i, (output_pkt_count[i] * 1.0 / (TICKS * LINE_RATE)), "pkt/tick", (output_del_acc[i] * 1.0 /output_pkt_count[i]) * LINE_RATE, "ticks"
+   print i, (output_pkt_count[i] * 1.0 / (TICKS * LINE_RATE)), "pkt/tick",
+         (output_del_acc[i] * 1.0 /output_pkt_count[i]) * LINE_RATE, "ticks"
