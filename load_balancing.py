@@ -10,11 +10,12 @@ TICKS = 1000000
 PORTS = int(sys.argv[1])
 LEAFS = PORTS
 SPINES = PORTS
-LINE_RATE = PORTS
+LINE_RATE = 2 * PORTS
 # i.e. rate relative to interconnect links
 # Keslassy's paper sets the line rates to R
 # and the interconnect rates to R/N, we set
-# R to N, so that R/N = 1
+# R equal to 2 * N
+# and the interconnect rate equal to 2
 # (so that we don't deal with frac. rates)
 ARRIVAL_RATE = float(sys.argv[2])
 
