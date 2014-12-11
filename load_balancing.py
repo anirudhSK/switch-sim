@@ -30,6 +30,8 @@ for leaf in leaf_nodes:
 
 for spine in spine_nodes:
   spine_voqs.append([])
+  for leaf in leaf_nodes:
+    spine_voqs[spine].append([])
 
 # Simulate
 for current_tick in range(0, TICKS):
@@ -41,20 +43,26 @@ for current_tick in range(0, TICKS):
 
   # Move them from leaf_inputs to spine_voqs
   # Use round-robin to go through all spines
+  # full mesh from leafs to spines
   spine_cursor=0
   for i in range(0, LEAFS):
-    if (len(leaf_inputs[i]) == 0):
-      continue
-    pkt_to_bounce = leaf_inputs[i].pop(0); 
-    spine_voqs[spine_cursor].append(pkt_to_bounce);
-    spine_cursor = (spine_cursor + 1) % SPINES
+    for j in range(0, SPINES):
+      if (len(leaf_inputs[i]) == 0):
+        continue
+      pkt_to_bounce = leaf_inputs[i].pop(0);
+      spine_voqs[spine_cursor][pkt_to_bounce[1]].append(pkt_to_bounce);
+      spine_cursor = (spine_cursor + 1) % SPINES
 
   # Move them from spine_voqs to leaf_outputs
+  # VOQs implicitly do round-robin
+  # full mesh from spines to leafs
   for i in range(0, SPINES):
-    if (len(spine_voqs[i]) == 0):
-      continue
-    pkt_to_send = spine_voqs[i].pop(0);
-    leaf_outputs[pkt_to_send[1]].append(pkt_to_send);
+    for j in range(0, LEAFS):
+      if (len(spine_voqs[i][j]) == 0):
+        continue
+      pkt_to_send = spine_voqs[i][j].pop(0)
+      assert(pkt_to_send[1] == j);
+      leaf_outputs[pkt_to_send[1]].append(pkt_to_send);
 
   # Transmit packets out
   for i in range(0, LEAFS):
