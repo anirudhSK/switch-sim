@@ -3,12 +3,15 @@
 # on a bipartite graph, because that's what most datacenters
 # care about
 import random
+import numpy.random
 import sys
 
 TICKS = 1000000
 LEAFS = 10
 SPINES = 10
-ARRIVAL_RATE = float(sys.argv[1])
+LINE_RATE = int(sys.argv[1])
+# i.e. rate relative to interconnect links
+ARRIVAL_RATE = float(sys.argv[2])
 
 leaf_nodes = range(LEAFS)
 spine_nodes = range(SPINES)
@@ -32,8 +35,8 @@ for spine in spine_nodes:
 for current_tick in range(0, TICKS):
   # Generate packets at leaf_inputs
   for i in range(0, LEAFS):
-    rnd = random.random();
-    if (rnd < ARRIVAL_RATE):
+    pkts_this_slot = numpy.random.poisson(ARRIVAL_RATE * LINE_RATE);
+    for j in range(0, pkts_this_slot):
       leaf_inputs[i].append((current_tick, random.randint(0, LEAFS - 1)));
 
   # Move them from leaf_inputs to spine_outputs
@@ -52,12 +55,15 @@ for current_tick in range(0, TICKS):
 
   # Transmit packets out
   for i in range(0, LEAFS):
-    if (len(leaf_outputs[i])==0):
-      continue
-    tx_pkt = leaf_outputs[i].pop(0);
-    output_pkt_count[i] = output_pkt_count[i] + 1;
-    assert(current_tick >= tx_pkt[0]);
-    output_del_acc[i] = output_del_acc[i] + (current_tick - tx_pkt[0]);
+    # pop out LINE RATE number of packets
+    for j in range(0, LINE_RATE):
+     if (len(leaf_outputs[i])==0):
+      break
+     else :
+      tx_pkt = leaf_outputs[i].pop(0);
+      output_pkt_count[i] = output_pkt_count[i] + 1;
+      assert(current_tick >= tx_pkt[0]);
+      output_del_acc[i] = output_del_acc[i] + (current_tick - tx_pkt[0]);
 
 for i in range (0, LEAFS):
    print i, output_pkt_count[i] * 1.0 / TICKS, "pkt/tick", output_del_acc[i] * 1.0 /output_pkt_count[i], "ticks"
