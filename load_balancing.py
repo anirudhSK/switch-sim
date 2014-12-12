@@ -1,7 +1,5 @@
 #! /usr/bin/python
-# Simulate Awerbuch and Leighton's 1993 FOCS paper
-# on a bipartite graph, because that's what most datacenters
-# care about
+# Simulate Keslassy et al's paper on Optimal Load Balancing
 import random
 import numpy.random
 import sys
