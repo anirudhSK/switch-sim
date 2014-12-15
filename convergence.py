@@ -35,7 +35,7 @@ class SrcNode:
       if (backpressure > 0) :
         print "Picking ", target
         assert(target.get_queue_size() < len(self.pkt_queue))
-        target.recv(self.pkt_queue.pop(0))
+        target.recv(self.pkt_queue.pop(0), current_tick)
 
 class WayPointNode:
 
@@ -44,16 +44,16 @@ class WayPointNode:
     self.line_rate = t_line_rate
     self.pkt_queue = []
 
-  def tick(self, targets):
+  def tick(self, targets, current_tick):
     assert(len(targets) == 1)
     for i in range(self.line_rate):
       if (len(self.pkt_queue) > 0):
-        targets[0].recv(self.pkt_queue.pop(0))
+        targets[0].recv(self.pkt_queue.pop(0), current_tick)
 
   def get_queue_size(self):
     return len(self.pkt_queue)
 
-  def recv(self, pkt):
+  def recv(self, pkt, current_tick):
     self.pkt_queue.append(pkt)
 
   def modify_line_rate(self, new_line_rate):
@@ -68,10 +68,10 @@ class DstNode:
     self.line_rate = t_line_rate
     self.pkt_queue = []
 
-  def recv(self, pkt):
+  def recv(self, pkt, current_tick):
     self.pkt_queue.append(pkt)
 
-  def tick(self, targets):
+  def tick(self, targets, current_tick):
     for i in range(min(self.line_rate, len(self.pkt_queue))):
       self.pkt_queue.pop(0)
 
@@ -84,7 +84,7 @@ dstnode = DstNode(LINE_RATE)
 TICKS = 1000000
 
 for current_tick in range(0, TICKS):
-  srcnode.tick([waypoint1, waypoint2], current_tick)
-  waypoint1.tick([dstnode])
-  waypoint2.tick([dstnode])
-  dstnode.tick([])
+  srcnode.tick([waypoint1, waypoint2, waypoint3], current_tick)
+  waypoint1.tick([dstnode], current_tick)
+  waypoint2.tick([dstnode], current_tick)
+  dstnode.tick([], current_tick)
