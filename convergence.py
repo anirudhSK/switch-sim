@@ -28,10 +28,11 @@ class SrcNode:
 
     # Transfer based on backpressure
     backpressures = [(target, len(self.pkt_queue) - target.get_queue_size()) for target in targets if (len(self.pkt_queue) - target.get_queue_size() > 0)]
-    picked_queue = max(backpressures)[0]
-    assert(picked_queue.get_queue_size() < len(self.pkt_queue))
-
-    print "SrcNode ticking"
+    if (len(backpressures) > 0) :
+      picked_queue = max(backpressures)[0]
+      print "Picking ", picked_queue
+      assert(picked_queue.get_queue_size() < len(self.pkt_queue))
+      picked_queue.recv(self.pkt_queue.pop(0))
 
 class WayPointNode:
   def __init__(self):
@@ -40,6 +41,8 @@ class WayPointNode:
     print "WayPointNode ticking"
   def get_queue_size(self):
     return len(self.pkt_queue)
+  def recv(self, pkt):
+    self.pkt_queue.append(pkt)
 
 class DstNode:
   def tick(self, targets):
