@@ -39,19 +39,24 @@ class SrcNode:
 
 class WayPointNode:
 
-  def __init__(self):
+  def __init__(self, t_line_rate):
+    self.line_rate = t_line_rate
     self.pkt_queue = []
 
   def tick(self, targets):
     assert(len(targets) == 1)
-    if (len(self.pkt_queue) > 0):
-      targets[0].recv(self.pkt_queue.pop(0))
+    for i in range(self.line_rate):
+      if (len(self.pkt_queue) > 0):
+        targets[0].recv(self.pkt_queue.pop(0))
 
   def get_queue_size(self):
     return len(self.pkt_queue)
 
   def recv(self, pkt):
     self.pkt_queue.append(pkt)
+
+  def modify_line_rate(self, new_line_rate):
+    self.line_rate = new_line_rate
 
 class DstNode:
 
@@ -67,10 +72,10 @@ class DstNode:
       self.pkt_queue.pop(0)
 
 LINE_RATE = 2
-ARRIVAL_RATE = 0.1
+ARRIVAL_RATE = 0.5
 srcnode = SrcNode(LINE_RATE, ARRIVAL_RATE)
-waypoint1 = WayPointNode()
-waypoint2 = WayPointNode()
+waypoint1 = WayPointNode(1)
+waypoint2 = WayPointNode(1)
 dstnode = DstNode(LINE_RATE)
 TICKS = 1000000
 
