@@ -3,15 +3,15 @@
 # A simulator to contrast the convergence of backpressure and CONGA
 
 # Here's the setup:
-#        waypoint1
-#        /        \
-#       /          \
-#      /            \
-#  srcnode        dstnode
-#      \            /
-#       \          /
-#        \        /
-#        waypoint2
+#        spine1
+#        /     \
+#       /       \
+#      /         \
+#  srcnode     dstnode
+#      \         /
+#       \       /
+#        \     /
+#        spine2
 #
 import numpy.random
 import numpy
@@ -37,7 +37,7 @@ class SrcNode:
         assert(target.get_queue_size() < len(self.pkt_queue))
         target.recv(self.pkt_queue.pop(0), current_tick)
 
-class WayPointNode:
+class SpineNode:
 
   def __init__(self, t_line_rate, t_id):
     self.id = t_id
@@ -78,13 +78,13 @@ class DstNode:
 LINE_RATE = 2
 ARRIVAL_RATE = 0.5
 srcnode = SrcNode(LINE_RATE, ARRIVAL_RATE)
-waypoint1 = WayPointNode(1, 1)
-waypoint2 = WayPointNode(1, 2)
+spine1 = SpineNode(1, 1)
+spine2 = SpineNode(1, 2)
 dstnode = DstNode(LINE_RATE)
 TICKS = 1000000
 
 for current_tick in range(0, TICKS):
-  srcnode.tick([waypoint1, waypoint2, waypoint3], current_tick)
-  waypoint1.tick([dstnode], current_tick)
-  waypoint2.tick([dstnode], current_tick)
+  srcnode.tick([spine1, spine2, spine3], current_tick)
+  spine1.tick([dstnode], current_tick)
+  spine2.tick([dstnode], current_tick)
   dstnode.tick([], current_tick)
