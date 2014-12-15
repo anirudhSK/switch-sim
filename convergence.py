@@ -39,7 +39,8 @@ class SrcNode:
 
 class WayPointNode:
 
-  def __init__(self, t_line_rate):
+  def __init__(self, t_line_rate, t_id):
+    self.id = t_id
     self.line_rate = t_line_rate
     self.pkt_queue = []
 
@@ -58,6 +59,9 @@ class WayPointNode:
   def modify_line_rate(self, new_line_rate):
     self.line_rate = new_line_rate
 
+  def get_id(self):
+    return self.id
+
 class DstNode:
 
   def __init__(self, t_line_rate):
@@ -74,8 +78,8 @@ class DstNode:
 LINE_RATE = 2
 ARRIVAL_RATE = 0.5
 srcnode = SrcNode(LINE_RATE, ARRIVAL_RATE)
-waypoint1 = WayPointNode(1)
-waypoint2 = WayPointNode(1)
+waypoint1 = WayPointNode(1, 1)
+waypoint2 = WayPointNode(1, 2)
 dstnode = DstNode(LINE_RATE)
 TICKS = 1000000
 
