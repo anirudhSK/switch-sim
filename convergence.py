@@ -55,21 +55,23 @@ class WayPointNode:
 
 class DstNode:
 
-  def __init__(self):
+  def __init__(self, t_line_rate):
+    self.line_rate = t_line_rate
     self.pkt_queue = []
 
   def recv(self, pkt):
     self.pkt_queue.append(pkt)
 
   def tick(self, targets):
-    pass
+    for i in range(min(self.line_rate, len(self.pkt_queue))):
+      self.pkt_queue.pop(0)
 
 LINE_RATE = 2
 ARRIVAL_RATE = 0.1
 srcnode = SrcNode(LINE_RATE, ARRIVAL_RATE)
 waypoint1 = WayPointNode()
 waypoint2 = WayPointNode()
-dstnode = DstNode()
+dstnode = DstNode(LINE_RATE)
 TICKS = 1000000
 
 for current_tick in range(0, TICKS):
