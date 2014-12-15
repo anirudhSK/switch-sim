@@ -27,8 +27,9 @@ class SrcNode:
       self.pkt_queue.append((current_tick, 0))
 
     # Transfer based on backpressure
-    backpressures = [len(self.pkt_queue) - target.get_queue_size() for target in targets if (len(self.pkt_queue) - target.get_queue_size() > 0)]
-    print numpy.argmax(backpressures)
+    backpressures = [(target, len(self.pkt_queue) - target.get_queue_size()) for target in targets if (len(self.pkt_queue) - target.get_queue_size() > 0)]
+    picked_queue = max(backpressures)[0]
+    assert(picked_queue.get_queue_size() < len(self.pkt_queue))
 
     print "SrcNode ticking"
 
