@@ -13,20 +13,40 @@
 #        \        /
 #        waypoint2
 #
+import numpy.random
+import numpy
 
-class SrcNode:  
+class SrcNode:
+  def __init__(self, t_line_rate, t_arrival_rate):
+    self.line_rate = t_line_rate
+    self.arrival_rate = t_arrival_rate
+    self.pkt_queue = []
   def tick(self, targets):
+    # Generate packets
+    for j in range(0, numpy.random.binomial(self.line_rate, self.arrival_rate)):
+      self.pkt_queue.append((current_tick, 0))
+
+    # Transfer based on backpressure
+    backpressures = [len(self.pkt_queue) - target.get_queue_size() for target in targets]
+    print numpy.argmax(backpressures)
+
     print "SrcNode ticking"
 
 class WayPointNode:
+  def __init__(self):
+    self.pkt_queue = []
   def tick(self, targets):
     print "WayPointNode ticking"
+  def get_queue_size(self):
+    return len(self.pkt_queue)
 
 class DstNode:
   def tick(self, targets):
     print "DstNode ticking"
 
-srcnode = SrcNode()
+LINE_RATE = 2
+ARRIVAL_RATE = 0.8
+srcnode = SrcNode(LINE_RATE, ARRIVAL_RATE)
 waypoint1 = WayPointNode()
 waypoint2 = WayPointNode()
 dstnode = DstNode()
