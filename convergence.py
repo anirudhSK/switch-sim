@@ -23,7 +23,7 @@ class SrcNode:
     self.arrival_rate = t_arrival_rate
     self.pkt_queue = []
 
-  def tick(self, targets):
+  def tick(self, targets, current_tick):
     # Generate packets
     for j in range(0, numpy.random.binomial(self.line_rate, self.arrival_rate)):
       self.pkt_queue.append((current_tick, 0))
@@ -80,7 +80,7 @@ dstnode = DstNode(LINE_RATE)
 TICKS = 1000000
 
 for current_tick in range(0, TICKS):
-  srcnode.tick([waypoint1, waypoint2])
+  srcnode.tick([waypoint1, waypoint2], current_tick)
   waypoint1.tick([dstnode])
   waypoint2.tick([dstnode])
   dstnode.tick([])
