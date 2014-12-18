@@ -3,9 +3,9 @@
 # A simulator to contrast the convergence of backpressure and CONGA
 
 # Here's the setup:
+#           spine0
+#    src0            dst0
 #           spine1
-#    src1            dst1
-#           spine2
 import numpy.random
 import numpy
 
@@ -75,17 +75,17 @@ class DstNode:
 
 LINE_RATE = 2
 ARRIVAL_RATE = 0.5
-src1 = SrcNode(LINE_RATE, ARRIVAL_RATE)
+src0 = SrcNode(LINE_RATE, ARRIVAL_RATE)
+spine0 = SpineNode(1, 0)
 spine1 = SpineNode(1, 1)
-spine2 = SpineNode(1, 2)
-dst1 = DstNode(LINE_RATE, 1)
+dst0 = DstNode(LINE_RATE, 0)
 TICKS = 1000000
 
 for current_tick in range(0, TICKS):
-  src1.tick([spine1, spine2], current_tick, [dst1])
-  spine1.tick([dst1], current_tick)
-  spine2.tick([dst1], current_tick)
-  dst1.tick([], current_tick)
+  src0.tick([spine0, spine1], current_tick, [dst0])
+  spine0.tick([dst0], current_tick)
+  spine1.tick([dst0], current_tick)
+  dst0.tick([], current_tick)
   if (current_tick == TICKS / 2):
-    print "Modified line rate for spine1"
-    spine1.modify_line_rate(0)
+    print "Modified line rate for spine0"
+    spine0.modify_line_rate(0)
