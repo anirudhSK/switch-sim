@@ -6,6 +6,7 @@
 #           spine0
 #    src0            dst0
 #           spine1
+import sys
 import numpy.random
 import numpy
 
@@ -44,35 +45,52 @@ class SrcNode:
   def __str__(self):
     return "leaf"+str(self.id)
 
-  def __init__(self, t_line_rate, t_num_dsts):
+  def __init__(self, t_line_rate, t_num_dsts, t_scheme):
     assert(isinstance(t_line_rate, int))
     self.line_rate = t_line_rate
     self.pkt_queue = []
     self.id = SrcNode.object_count
+    self.scheme = t_scheme
     SrcNode.object_count += 1
     for i in range(0, t_num_dsts):
       self.pkt_queue.append([])
 
   def tick(self, targets, current_tick):
-    for target in numpy.random.permutation(targets):
-      # Find destination with maximum backpressure
-      max_backpressure = -1
-      argmax_list = []
+
+    if (self.scheme == "vlb"):
+      agg_pkt_queue = []
       for dst_id in range(len(self.pkt_queue)):
-        backpressure = len(self.pkt_queue[dst_id]) - len(target.pkt_queue[dst_id])
-        if (backpressure > max_backpressure) :
-          max_backpressure = backpressure
-          argmax_list = [dst_id]
-        elif (backpressure == max_backpressure):
-          argmax_list += [dst_id]
+        while (len(self.pkt_queue[dst_id]) > 0):
+          agg_pkt_queue.append(self.pkt_queue[dst_id].pop(0))
+      assert(len(agg_pkt_queue) <= self.line_rate * len(targets));
+      for target in numpy.random.permutation(targets):
+        if (len(agg_pkt_queue) > 0) :
+          target.recv(agg_pkt_queue.pop(0), current_tick)
+      assert(len(agg_pkt_queue) == 0)
 
-      # Break ties randomly
-      argmax = numpy.random.choice(argmax_list)
+    elif (self.scheme == "backpressure"):
+      for target in numpy.random.permutation(targets):
+        # Find destination with maximum backpressure
+        max_backpressure = -1
+        argmax_list = []
+        for dst_id in range(len(self.pkt_queue)):
+          backpressure = len(self.pkt_queue[dst_id]) - len(target.pkt_queue[dst_id])
+          if (backpressure > max_backpressure) :
+            max_backpressure = backpressure
+            argmax_list = [dst_id]
+          elif (backpressure == max_backpressure):
+            argmax_list += [dst_id]
 
-      if (max_backpressure > 0):
-        assert(len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
-        for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
-          target.recv(self.pkt_queue[argmax].pop(0), current_tick)
+        # Break ties randomly
+        argmax = numpy.random.choice(argmax_list)
+
+        if (max_backpressure > 0):
+          assert(len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
+          for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
+            target.recv(self.pkt_queue[argmax].pop(0), current_tick)
+
+    else :
+      assert(False)
 
   def recv(self, pkt):
     self.pkt_queue[pkt.dst].append(pkt)
@@ -155,8 +173,8 @@ pktgen0 = PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = 2, t_source
 pktgen1 = PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = 2, t_source = 1)
 
 # Sources
-src0 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2)
-src1 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2)
+src0 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2, t_scheme = sys.argv[1])
+src1 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2, t_scheme = sys.argv[1])
 
 # Spines
 spine0 = SpineNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2)
