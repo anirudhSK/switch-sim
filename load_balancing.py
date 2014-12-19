@@ -25,14 +25,15 @@ leaf_outputs = []
 spine_voqs = []
 
 # Stat counters
-output_pkt_count = []
-output_del_acc = []
+pkt_stats = dict()
+del_stats = dict()
 
 for leaf in leaf_nodes:
   leaf_inputs.append([])
   leaf_outputs.append([])
-  output_pkt_count.append(0);
-  output_del_acc.append(0);
+  for leaf_peer in leaf_nodes:
+    pkt_stats[(leaf, leaf_peer)] = 0
+    del_stats[(leaf, leaf_peer)] = 0
 
 for spine in spine_nodes:
   spine_voqs.append([])
@@ -44,7 +45,7 @@ for current_tick in range(1, TICKS + 1):
   # Generate packets at leaf_inputs
   for i in range(0, LEAFS):
     for j in range(0, numpy.random.binomial(LINE_RATE, ARRIVAL_RATE)):
-      leaf_inputs[i].append((current_tick, numpy.random.random_integers(0, LEAFS - 1)));
+      leaf_inputs[i].append((current_tick, numpy.random.random_integers(0, LEAFS - 1), i));
 
   # Move all packets from leaf_inputs to spine_voqs
   # Use round-robin to load balance across all spines
@@ -77,22 +78,16 @@ for current_tick in range(1, TICKS + 1):
     # pop out up to LINE RATE number of packets
     for j in range(0, min(LINE_RATE, len(leaf_outputs[i]))):
       tx_pkt = leaf_outputs[i].pop(0);
-      output_pkt_count[i] = output_pkt_count[i] + 1;
+      src = tx_pkt[2];
+      pkt_stats[(src, i)] = pkt_stats[(src, i)]  + 1;
       assert(current_tick >= tx_pkt[0]);
-      output_del_acc[i] = output_del_acc[i] + (current_tick - tx_pkt[0]);
+      del_stats[(src, i)] = del_stats[(src, i)] + (current_tick - tx_pkt[0]);
 
 # Output stats
-for i in range (0, LEAFS):
-  print i, (output_pkt_count[i] * 1.0 / (TICKS * LINE_RATE)), "pkt/tick",\
-        (output_del_acc[i] * 1.0 /output_pkt_count[i]) * LINE_RATE, "ticks"
-
-# Queue stats
-for i in range (0, LEAFS):
-  print "Queue size at leaf_inputs", i, len(leaf_inputs[i])
-
-for i in range (0, SPINES):
-  for j in range(0, LEAFS):
-    print "VOQ(",i,",",j,")",len(spine_voqs[i][j])
-
-for i in range (0, LEAFS):
-  print "Queue size at leaf outputs", i, len(leaf_outputs[i])
+for dst in range(0, LEAFS):
+  total = 0
+  for src in range (0, LEAFS):
+    print "src", src, "dst", dst, "pkts", pkt_stats[(src, dst)], "del",\
+          del_stats[(src, dst)] * 1.0 / pkt_stats[(src, dst)]
+    total += pkt_stats[(src, dst)]
+  print "total", total
