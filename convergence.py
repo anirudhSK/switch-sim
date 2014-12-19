@@ -93,10 +93,8 @@ class SrcNode:
   def recv(self, pkt):
     if (self.scheme == "vlb"):
       self.agg_pkt_queue.append(pkt)
-      print "@", current_tick, self, "q in agg", len(self.agg_pkt_queue)
     elif (self.scheme == "backpressure"):
       self.pkt_queue[pkt.dst].append(pkt)
-      print "@", current_tick, self, "q for dst", pkt.dst, len(self.pkt_queue[pkt.dst])
 
 class SpineNode:
 
@@ -123,7 +121,6 @@ class SpineNode:
 
   def recv(self, pkt, current_tick):
     self.pkt_queue[pkt.dst].append(pkt)
-    print "@", current_tick, self, "q for dst", pkt.dst, len(self.pkt_queue[pkt.dst])
 
   def modify_line_rate(self, new_line_rate):
     self.line_rate = new_line_rate
