@@ -38,7 +38,7 @@ for spine in spine_nodes:
     spine_voqs[spine].append([])
 
 # Simulate
-for current_tick in range(0, TICKS):
+for current_tick in range(1, TICKS + 1):
   # Generate packets at leaf_inputs
   for i in range(0, LEAFS):
     for j in range(0, numpy.random.binomial(LINE_RATE, ARRIVAL_RATE)):
