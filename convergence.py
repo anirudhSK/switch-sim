@@ -165,9 +165,11 @@ class DstNode:
     return self.id
 
 # Constants
-LINE_RATE = 2
-LOAD = 0.999
-TICKS = 1000000
+scheme = sys.argv[1]
+numpy.random.seed(int(sys.argv[2]))
+LINE_RATE = int(sys.argv[3])
+LOAD = float(sys.argv[4])
+TICKS = int(sys.argv[5])
 
 # Nodes
 # Packet generators
@@ -175,8 +177,8 @@ pktgen0 = PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = 2, t_source
 pktgen1 = PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = 2, t_source = 1)
 
 # Sources
-src0 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2, t_scheme = sys.argv[1])
-src1 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2, t_scheme = sys.argv[1])
+src0 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2, t_scheme = scheme)
+src1 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2, t_scheme = scheme)
 
 # Spines
 spine0 = SpineNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2)

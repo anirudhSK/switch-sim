@@ -2,8 +2,6 @@
 # Simulate Keslassy et al's paper on Optimal Load Balancing
 import numpy.random
 import sys
-
-TICKS = 1000000
 PORTS = int(sys.argv[1])
 LEAFS = PORTS
 SPINES = PORTS
@@ -13,7 +11,11 @@ LINE_RATE = PORTS
 # and the interconnect rates to R/N (Fig. 1).
 # We set R=N, so that R/N = 1
 # (so that we don't use fractional rates)
+
 ARRIVAL_RATE = float(sys.argv[2])
+numpy.random.seed(int(sys.argv[3]))
+TICKS = int(sys.argv[4])
+
 leaf_nodes = range(LEAFS)
 spine_nodes = range(SPINES)
 
