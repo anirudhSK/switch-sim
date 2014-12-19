@@ -49,6 +49,7 @@ class SrcNode:
     assert(isinstance(t_line_rate, int))
     self.line_rate = t_line_rate
     self.pkt_queue = []
+    self.agg_pkt_queue = []
     self.id = SrcNode.object_count
     self.scheme = t_scheme
     SrcNode.object_count += 1
@@ -58,15 +59,12 @@ class SrcNode:
   def tick(self, targets, current_tick):
 
     if (self.scheme == "vlb"):
-      agg_pkt_queue = []
-      for dst_id in range(len(self.pkt_queue)):
-        while (len(self.pkt_queue[dst_id]) > 0):
-          agg_pkt_queue.append(self.pkt_queue[dst_id].pop(0))
-      assert(len(agg_pkt_queue) <= self.line_rate * len(targets));
-      for target in numpy.random.permutation(targets):
-        if (len(agg_pkt_queue) > 0) :
-          target.recv(agg_pkt_queue.pop(0), current_tick)
-      assert(len(agg_pkt_queue) == 0)
+      assert(len(self.agg_pkt_queue) <= self.line_rate * len(targets));
+
+      for target in targets:
+        if (len(self.agg_pkt_queue) > 0) :
+          target.recv(self.agg_pkt_queue.pop(0), current_tick)
+      assert(len(self.agg_pkt_queue) == 0)
 
     elif (self.scheme == "backpressure"):
       for target in numpy.random.permutation(targets):
@@ -93,8 +91,12 @@ class SrcNode:
       assert(False)
 
   def recv(self, pkt):
-    self.pkt_queue[pkt.dst].append(pkt)
-    print "@", current_tick, self, "q for dst", pkt.dst, len(self.pkt_queue[pkt.dst])
+    if (self.scheme == "vlb"):
+      self.agg_pkt_queue.append(pkt)
+      print "@", current_tick, self, "q in agg", len(self.agg_pkt_queue)
+    elif (self.scheme == "backpressure"):
+      self.pkt_queue[pkt.dst].append(pkt)
+      print "@", current_tick, self, "q for dst", pkt.dst, len(self.pkt_queue[pkt.dst])
 
 class SpineNode:
 
