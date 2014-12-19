@@ -52,7 +52,7 @@ for current_tick in range(1, TICKS + 1):
   # We have a full mesh from leafs to spines
   # and each leaf-spine link can transmit 1 pkt/slot
   spine_cursor=0
-  for i in range(0, LEAFS):
+  for i in numpy.random.permutation(range(0, LEAFS)):
     while (len(leaf_inputs[i]) > 0):
       pkt_to_bounce = leaf_inputs[i].pop(0);
       spine_voqs[spine_cursor][pkt_to_bounce[1]].append(pkt_to_bounce);
@@ -66,8 +66,8 @@ for current_tick in range(1, TICKS + 1):
   # Use round-robin to go through all VOQs
   # We have a full mesh from spines to leafs
   # and each spine-leaf link can transmit 1 pkt/slot
-  for i in range(0, SPINES):
-    for j in range(0, LEAFS):
+  for i in numpy.random.permutation(range(0, SPINES)):
+    for j in numpy.random.permutation(range(0, LEAFS)):
       if (len(spine_voqs[i][j]) > 0):
         pkt_to_send = spine_voqs[i][j].pop(0)
         assert(pkt_to_send[1] == j);
