@@ -69,7 +69,7 @@ class SrcNode:
     elif (self.scheme == "backpressure"):
       for target in numpy.random.permutation(targets):
         # Find destination with maximum backpressure
-        max_backpressure = -1
+        max_backpressure = -sys.maxint - 1
         argmax_list = []
         for dst_id in range(len(self.pkt_queue)):
           backpressure = len(self.pkt_queue[dst_id]) - len(target.pkt_queue[dst_id])
@@ -82,7 +82,7 @@ class SrcNode:
         # Break ties randomly
         argmax = numpy.random.choice(argmax_list)
 
-        if (max_backpressure > 0):
+        if (max_backpressure >= 1):
           assert(len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
           for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
             target.recv(self.pkt_queue[argmax].pop(0), current_tick)
