@@ -82,7 +82,7 @@ class SrcNode:
         # Break ties randomly
         argmax = numpy.random.choice(argmax_list)
 
-        if (max_backpressure >= 1):
+        if (max_backpressure >= M):
           assert(len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
           for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
             target.recv(self.pkt_queue[argmax].pop(0), current_tick)
@@ -167,35 +167,33 @@ numpy.random.seed(int(sys.argv[2]))
 LINE_RATE = int(sys.argv[3])
 LOAD = float(sys.argv[4])
 TICKS = int(sys.argv[5])
+NODES = int(sys.argv[6])
+M = int(sys.argv[7])
 
 # Nodes
 # Packet generators
-pktgen0 = PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = 2, t_source = 0)
-pktgen1 = PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = 2, t_source = 1)
+pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i) for i in range(NODES)]
 
 # Sources
-src0 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2, t_scheme = scheme)
-src1 = SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2, t_scheme = scheme)
+srcs = [SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = NODES, t_scheme = scheme) for i in range(NODES)]
 
 # Spines
-spine0 = SpineNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2)
-spine1 = SpineNode(t_line_rate = LINE_RATE / 2, t_num_dsts = 2)
+spines = [SpineNode(t_line_rate = LINE_RATE / 2, t_num_dsts = NODES) for i in range(NODES)]
 
 # Destinations
-dst0 = DstNode(t_line_rate = LINE_RATE, t_id = 0)
-dst1 = DstNode(t_line_rate = LINE_RATE, t_id = 1)
+dsts = [DstNode(t_line_rate = LINE_RATE, t_id = i) for i in range(NODES)]
 
 # Simulate
 for current_tick in range(1, TICKS + 1):
-  pktgen0.tick(src0, current_tick)
-  pktgen1.tick(src1, current_tick)
-  for x in numpy.random.permutation([src0, src1]):
-    x.tick([spine0, spine1], current_tick)
-  for x in numpy.random.permutation([spine0, spine1]):
-    x.tick([dst0, dst1], current_tick)
-  dst0.tick(current_tick)
-  dst1.tick(current_tick)
+  for i in range(NODES):
+    pktgens[i].tick(srcs[i], current_tick)
+  for x in numpy.random.permutation(srcs):
+    x.tick(spines, current_tick)
+  for x in numpy.random.permutation(spines):
+    x.tick(dsts, current_tick)
+  for i in range(NODES):
+    dsts[i].tick(current_tick)
 
 # Output stats
-dst0.dump_stats()
-dst1.dump_stats()
+for i in range(NODES):
+  dsts[i].dump_stats()
