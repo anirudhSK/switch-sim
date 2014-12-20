@@ -83,7 +83,7 @@ class SrcNode:
         argmax = numpy.random.choice(argmax_list)
 
         if (max_backpressure >= M):
-          assert(len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
+          assert(M <= 0 or len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
           for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
             target.recv(self.pkt_queue[argmax].pop(0), current_tick)
 
