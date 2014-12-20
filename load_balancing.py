@@ -52,11 +52,12 @@ for current_tick in range(1, TICKS + 1):
   # We have a full mesh from leafs to spines
   # and each leaf-spine link can transmit 1 pkt/slot
   for i in numpy.random.permutation(range(0, LEAFS)):
+    permute_spines = numpy.random.permutation(range(SPINES))
     spine_cursor=0
     while (len(leaf_inputs[i]) > 0):
       pkt_to_bounce = leaf_inputs[i].pop(0);
       assert (spine_cursor < SPINES)
-      spine_voqs[spine_cursor][pkt_to_bounce[1]].append(pkt_to_bounce);
+      spine_voqs[permute_spines[spine_cursor]][pkt_to_bounce[1]].append(pkt_to_bounce);
       spine_cursor = (spine_cursor + 1)
 
   # All packets should have been moved by now

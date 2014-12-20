@@ -61,7 +61,7 @@ class SrcNode:
     if (self.scheme == "vlb"):
       assert(len(self.agg_pkt_queue) <= self.line_rate * len(targets));
 
-      for target in targets:
+      for target in numpy.random.permutation(targets):
         if (len(self.agg_pkt_queue) > 0) :
           target.recv(self.agg_pkt_queue.pop(0), current_tick)
       assert(len(self.agg_pkt_queue) == 0)
