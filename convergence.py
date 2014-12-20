@@ -164,21 +164,21 @@ class DstNode:
 # Constants
 scheme = sys.argv[1]
 numpy.random.seed(int(sys.argv[2]))
-LINE_RATE = int(sys.argv[3])
+NODES = int(sys.argv[3])
 LOAD = float(sys.argv[4])
 TICKS = int(sys.argv[5])
-NODES = int(sys.argv[6])
-M = int(sys.argv[7])
+M = int(sys.argv[6])
+LINE_RATE = NODES
 
 # Nodes
 # Packet generators
 pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i) for i in range(NODES)]
 
 # Sources
-srcs = [SrcNode(t_line_rate = LINE_RATE / 2, t_num_dsts = NODES, t_scheme = scheme) for i in range(NODES)]
+srcs = [SrcNode(t_line_rate = 1, t_num_dsts = NODES, t_scheme = scheme) for i in range(NODES)]
 
 # Spines
-spines = [SpineNode(t_line_rate = LINE_RATE / 2, t_num_dsts = NODES) for i in range(NODES)]
+spines = [SpineNode(t_line_rate = 1, t_num_dsts = NODES) for i in range(NODES)]
 
 # Destinations
 dsts = [DstNode(t_line_rate = LINE_RATE, t_id = i) for i in range(NODES)]
