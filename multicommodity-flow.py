@@ -91,7 +91,7 @@ class FlowNetwork:
     print "min: ",
     for link in self.links:
       for k in range(num_commodities):
-        print self.costs[(link, k)], "x" + str(link[0]) + str(link[1]) + str(k) + " +",
+        print self.flow_on_link_var(link[0], link[1], k) + " +",
     print " 0 ;"
     print
 
