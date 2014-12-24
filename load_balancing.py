@@ -93,3 +93,4 @@ for dst in range(0, LEAFS):
           del_stats[(src, dst)] * 1.0 / pkt_stats[(src, dst)]
     total += pkt_stats[(src, dst)]
   print "total", total
+print "Expected delay according to Karol's 1987 paper", (((LEAFS - 1) * 1.0) / LEAFS) * 0.5 * (1.0 / LINE_RATE) * (ARRIVAL_RATE / (1 - ARRIVAL_RATE))
