@@ -116,5 +116,5 @@ class FlowNetwork:
         print "0 = " + str(self.balance[(vertex, k)]) + ";"
     print
 
-flow_network = FlowNetwork("./graph.sample", "./tm.sample", "./cost.sample")
+flow_network = FlowNetwork(graph_file = sys.argv[1], traffic_matrix_file = sys.argv[2], cost_file = sys.argv[3])
 flow_network.get_lp()
