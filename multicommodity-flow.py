@@ -82,6 +82,9 @@ class FlowNetwork:
       self.balance[(src, commodity_id)] = demand
       self.balance[(dst, commodity_id)] = -demand
 
+  def flow_on_link_var(self, link_src, link_dst, commodity_id):
+    return "x_" + str(link_src) + "_" + str(link_dst) + "_" + str(commodity_id)
+
   def get_lp(self):
     num_commodities = len(self.tm)
     # Objective function
@@ -95,7 +98,7 @@ class FlowNetwork:
     # Capacity constraints
     for link in self.links:
       for k in range(num_commodities):
-        print "x" + str(link[0]) + str(link[1]) + str(k) + " +",
+        print self.flow_on_link_var(link[0], link[1], k) + " +",
       print "0 <= " + str(self.links[link]) + ";"
     print
 
@@ -104,12 +107,12 @@ class FlowNetwork:
       for k in range(num_commodities):
         for link in self.outgoing[vertex]:
           assert(link[0] == vertex)
-          print "x" + str(link[0]) + str(link[1]) + str(k) + " +",
+          print self.flow_on_link_var(link[0], link[1], k) + " +",
         print "0 - ",
 
         for link in self.incoming[vertex]:
           assert(link[1] == vertex)
-          print "x" + str(link[0]) + str(link[1]) + str(k) + " -",
+          print self.flow_on_link_var(link[0], link[1], k) + " -",
         print "0 = " + str(self.balance[(vertex, k)]) + ";"
     print
 
