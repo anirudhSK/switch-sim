@@ -2,6 +2,7 @@
 # Setup
 import random
 import sys
+import numpy.random
 random.seed(1)
 num_ports = int(sys.argv[1])
 current_tick = 0
@@ -26,7 +27,7 @@ while (current_tick < total_ticks):
 
   # Input side
   for i in range(0, num_ports):
-    rnd = random.random();
+    rnd = numpy.random.random();
     if (rnd < arrival_rate):
       input_queues[i].append((current_tick, random.randint(0, num_ports - 1), i));
     inputs_for_each_output.append([])
