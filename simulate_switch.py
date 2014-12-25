@@ -65,4 +65,4 @@ while (current_tick < total_ticks):
 
 for dst in range (0, num_ports):
   for src in range (0, num_ports):
-   print "src", src, "dst", dst, output_pkt_count[src][dst] * 1.0 * num_ports , "pkts", output_del_acc[src][dst] * 1.0 / (1.0 * num_ports * output_pkt_count[src][dst]), "ticks"
+   print "src", src, "dst", dst, "pkts", output_pkt_count[src][dst] * 1.0 * num_ports , "del", output_del_acc[src][dst] * 1.0 / (1.0 * num_ports * output_pkt_count[src][dst])
