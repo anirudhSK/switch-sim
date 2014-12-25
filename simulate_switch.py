@@ -15,8 +15,11 @@ OUTPUT_QUEUE_MAX = int(sys.argv[3]);
 for i in range(0, num_ports):
   input_queues.append([])
   output_queues.append([])
-  output_pkt_count.append(0)
-  output_del_acc.append(0)
+  output_pkt_count.append([])
+  output_del_acc.append([])
+  for j in range(0, num_ports):
+    output_pkt_count[i].append(0)
+    output_del_acc[i].append(0)
 
 while (current_tick < total_ticks):
   inputs_for_each_output = []
@@ -25,7 +28,7 @@ while (current_tick < total_ticks):
   for i in range(0, num_ports):
     rnd = random.random();
     if (rnd < arrival_rate):
-      input_queues[i].append((current_tick, random.randint(0, num_ports - 1)));
+      input_queues[i].append((current_tick, random.randint(0, num_ports - 1), i));
     inputs_for_each_output.append([])
 
   # Look at the input heads
@@ -53,11 +56,13 @@ while (current_tick < total_ticks):
   for i in range(0, num_ports):
     if (len(output_queues[i]) > 0):
       tx_pkt = output_queues[i].pop(0);
-      output_pkt_count[i] = output_pkt_count[i] + 1;
       assert(current_tick >= tx_pkt[0]);
-      output_del_acc[i] = output_del_acc[i] + (current_tick - tx_pkt[0]);
+      input_port = tx_pkt[2];
+      output_pkt_count[input_port][i] = output_pkt_count[input_port][i] + 1;
+      output_del_acc[input_port][i] = output_del_acc[input_port][i] + (current_tick - tx_pkt[0]);
 
   current_tick = current_tick + 1;
 
-for i in range (0, num_ports):
-   print i, output_pkt_count[i] * 1.0 / total_ticks, "pkt/tick", output_del_acc[i] * 1.0 /output_pkt_count[i], "ticks"
+for dst in range (0, num_ports):
+  for src in range (0, num_ports):
+   print "src", src, "dst", dst, output_pkt_count[src][dst] * 1.0 * num_ports , "pkts", output_del_acc[src][dst] * 1.0 / (1.0 * num_ports * output_pkt_count[src][dst]), "ticks"
