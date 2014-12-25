@@ -64,5 +64,9 @@ while (current_tick < total_ticks):
   current_tick = current_tick + 1;
 
 for dst in range (0, num_ports):
+  total = 0
   for src in range (0, num_ports):
    print "src", src, "dst", dst, "pkts", output_pkt_count[src][dst] * 1.0 * num_ports , "del", output_del_acc[src][dst] * 1.0 / (1.0 * num_ports * output_pkt_count[src][dst])
+   total += self.pkt_stats[src]
+  print "total", total
+
