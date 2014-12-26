@@ -25,8 +25,8 @@ interims = [SrcNode(t_line_rate = 1, t_num_dsts = 1, t_scheme = scheme) for i in
 
 # Spines
 # for route through interim nodes
-alt_spine = SpineNode(t_line_rate = 1, t_num_dsts = 1)
-main_spine = SpineNode(t_line_rate = 1, t_num_dsts = 1)
+alt_spine = SpineNode(t_line_rate = 1, t_num_dsts = 1, t_name = "alt_spine")
+main_spine = SpineNode(t_line_rate = 1, t_num_dsts = 1, t_name = "main_spine")
 
 # Destinations
 dst = DstNode(t_line_rate = 1, t_id = 0)

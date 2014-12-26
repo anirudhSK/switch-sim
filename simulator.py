@@ -96,13 +96,14 @@ class SpineNode:
   object_count = 0
 
   def __str__(self):
-    return "spine"+str(self.id)
+    return "spine"+str(self.id) if self.name == "" else self.name
 
-  def __init__(self, t_line_rate, t_num_dsts):
+  def __init__(self, t_line_rate, t_num_dsts, t_name = ""):
     assert(isinstance(t_line_rate, int))
     self.line_rate = t_line_rate
     self.pkt_queue = []
     self.id = SpineNode.object_count
+    self.name = t_name
     SpineNode.object_count += 1
     for i in range(t_num_dsts):
       self.pkt_queue.append([])
