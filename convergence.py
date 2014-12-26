@@ -31,7 +31,7 @@ for current_tick in range(1, TICKS + 1):
   for i in range(NODES):
     pktgens[i].tick(srcs[i], current_tick)
   for x in numpy.random.permutation(srcs):
-    x.tick(spines, current_tick)
+    x.tick(spines, current_tick, backpressure_M = M)
   for x in numpy.random.permutation(spines):
     x.tick(dsts, current_tick)
   for i in range(NODES):
