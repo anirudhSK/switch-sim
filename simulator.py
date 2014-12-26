@@ -9,6 +9,7 @@ class Packet:
     self.tick = creation_tick
     self.dst  = destination
     self.src  = source
+    self.last_hop = ""
 
 class PktGen:
 
@@ -84,8 +85,10 @@ class SrcNode:
 
   def recv(self, pkt):
     if (self.scheme == "vlb"):
+      pkt.last_hop = str(self)
       self.agg_pkt_queue.append(pkt)
     elif (self.scheme == "backpressure"):
+      pkt.last_hop = str(self)
       self.pkt_queue[pkt.dst].append(pkt)
 
 class SpineNode:
@@ -112,6 +115,7 @@ class SpineNode:
         target.recv(self.pkt_queue[target.get_id()].pop(0))
 
   def recv(self, pkt):
+    pkt.last_hop = str(self)
     self.pkt_queue[pkt.dst].append(pkt)
 
   def modify_line_rate(self, new_line_rate):
@@ -126,6 +130,7 @@ class DstNode:
     self.id = t_id
     self.pkt_stats = dict()
     self.del_stats = dict()
+    self.path_stats = dict()
 
   def recv(self, pkt):
     assert(pkt.dst == self.id)
@@ -143,11 +148,19 @@ class DstNode:
         self.pkt_stats[src] += 1
         self.del_stats[src] += (current_tick - pkt.tick)
 
+      # Measure path stats
+      if (pkt.last_hop not in self.path_stats):
+        self.path_stats[pkt.last_hop] = 1
+      else:
+        self.path_stats[pkt.last_hop] += 1
+
   def dump_stats(self):
     total = 0
     for src in self.pkt_stats:
       print "src", src, "dst", self.id, "pkts", self.pkt_stats[src], "del", self.del_stats[src] * 1.0 / self.pkt_stats[src]
       total += self.pkt_stats[src]
+    for path in self.path_stats:
+      print "last_hop", path, "pkts", self.path_stats[path]
     print "total", total
 
   def get_id(self):
