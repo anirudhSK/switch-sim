@@ -48,7 +48,7 @@ class SrcNode:
     for i in range(0, t_num_dsts):
       self.pkt_queue.append([])
 
-  def tick(self, targets, current_tick):
+  def tick(self, targets, current_tick, backpressure_M):
 
     if (self.scheme == "vlb"):
       assert(len(self.agg_pkt_queue) <= self.line_rate * len(targets));
@@ -74,8 +74,8 @@ class SrcNode:
         # Break ties randomly
         argmax = numpy.random.choice(argmax_list)
 
-        if (max_backpressure >= M):
-          assert(M <= 0 or len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
+        if (max_backpressure >= backpressure_M):
+          assert(backpressure_M <= 0 or len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
           for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
             target.recv(self.pkt_queue[argmax].pop(0), current_tick)
 
