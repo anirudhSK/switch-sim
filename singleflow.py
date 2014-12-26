@@ -33,26 +33,23 @@ dst = DstNode(t_line_rate = 1, t_id = 0)
 
 # Simulate
 for current_tick in range(1, TICKS + 1):
-  # Permute all entities
-  for x in numpy.random.permutation([pkt, src, main_spine, alt_spine, dst] + range(num_interim_nodes)):
-    if x == pkt:
-      pkt.tick(src, current_tick)
-    elif x == src:
-      src.tick([interims[0] if num_interim_nodes > 0 else alt_spine, main_spine], current_tick, backpressure_M = M)
-    elif (num_interim_nodes > 0 and x == (num_interim_nodes - 1)) :
+  pkt.tick(src, current_tick)
+  src.tick([interims[0] if num_interim_nodes > 0 else alt_spine, main_spine], current_tick, backpressure_M = M)
+  # Permute all parallel entities
+  for x in numpy.random.permutation([main_spine, alt_spine] + range(num_interim_nodes)):
+    if (num_interim_nodes > 0 and x == (num_interim_nodes - 1)) :
       assert(x >= 0)
       interims[x].tick([alt_spine], current_tick, backpressure_M = M)
     elif x == main_spine :
       main_spine.tick([dst], current_tick)
     elif x == alt_spine:
       alt_spine.tick([dst], current_tick)
-    elif x == dst:
-      dst.tick(current_tick)
     else :
       assert(x >= 0)
       assert(x < len(interims))
       assert(x + 1 < len(interims))
       interims[x].tick([interims[x+1]], current_tick, backpressure_M = M)
+  dst.tick(current_tick)
 
 # Output stats
 dst.dump_stats()
