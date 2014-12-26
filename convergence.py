@@ -1,6 +1,6 @@
 #!  /usr/bin/python
 
-# A simulator to contrast the convergence of backpressure and CONGA
+# A simulator to study backpressure on leaf-spine topologies
 from simulator import *
 import sys
 
