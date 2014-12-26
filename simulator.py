@@ -55,7 +55,7 @@ class SrcNode:
 
       for target in numpy.random.permutation(targets):
         if (len(self.agg_pkt_queue) > 0) :
-          target.recv(self.agg_pkt_queue.pop(0), current_tick)
+          target.recv(self.agg_pkt_queue.pop(0))
       assert(len(self.agg_pkt_queue) == 0)
 
     elif (self.scheme == "backpressure"):
@@ -77,7 +77,7 @@ class SrcNode:
         if (max_backpressure >= backpressure_M):
           assert(backpressure_M <= 0 or len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
           for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
-            target.recv(self.pkt_queue[argmax].pop(0), current_tick)
+            target.recv(self.pkt_queue[argmax].pop(0))
 
     else :
       assert(False)
@@ -109,9 +109,9 @@ class SpineNode:
       # Backpressure is trivial on spine nodes
       # Because queues at destinations are 0
       for i in range(min(self.line_rate, len(self.pkt_queue[target.get_id()]))):
-        target.recv(self.pkt_queue[target.get_id()].pop(0), current_tick)
+        target.recv(self.pkt_queue[target.get_id()].pop(0))
 
-  def recv(self, pkt, current_tick):
+  def recv(self, pkt):
     self.pkt_queue[pkt.dst].append(pkt)
 
   def modify_line_rate(self, new_line_rate):
@@ -127,7 +127,7 @@ class DstNode:
     self.pkt_stats = dict()
     self.del_stats = dict()
 
-  def recv(self, pkt, current_tick):
+  def recv(self, pkt):
     assert(pkt.dst == self.id)
     self.pkt_queue.append(pkt)
 
