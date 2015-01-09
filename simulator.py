@@ -38,58 +38,11 @@ class SrcNode:
   def __str__(self):
     return "leaf"+str(self.id)
 
-  def __init__(self, t_line_rate, t_num_dsts, t_scheme):
+  def __init__(self, t_line_rate, t_num_dsts):
     assert(isinstance(t_line_rate, int))
     self.line_rate = t_line_rate
-    self.pkt_queue = []
-    self.agg_pkt_queue = []
     self.id = SrcNode.object_count
-    self.scheme = t_scheme
     SrcNode.object_count += 1
-    for i in range(0, t_num_dsts):
-      self.pkt_queue.append([])
-
-  def tick(self, targets, current_tick, backpressure_M):
-
-    if (self.scheme == "vlb"):
-      assert(len(self.agg_pkt_queue) <= self.line_rate * len(targets));
-
-      for target in numpy.random.permutation(targets):
-        if (len(self.agg_pkt_queue) > 0) :
-          target.recv(self.agg_pkt_queue.pop(0))
-      assert(len(self.agg_pkt_queue) == 0)
-
-    elif (self.scheme == "backpressure"):
-      for target in numpy.random.permutation(targets):
-        # Find destination with maximum backpressure
-        max_backpressure = -sys.maxint - 1
-        argmax_list = []
-        for dst_id in range(len(self.pkt_queue)):
-          backpressure = len(self.pkt_queue[dst_id]) - len(target.pkt_queue[dst_id])
-          if (backpressure > max_backpressure) :
-            max_backpressure = backpressure
-            argmax_list = [dst_id]
-          elif (backpressure == max_backpressure):
-            argmax_list += [dst_id]
-
-        # Break ties randomly
-        argmax = numpy.random.choice(argmax_list)
-
-        if (max_backpressure >= backpressure_M):
-          assert(backpressure_M <= 0 or len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
-          for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
-            target.recv(self.pkt_queue[argmax].pop(0))
-
-    else :
-      assert(False)
-
-  def recv(self, pkt):
-    if (self.scheme == "vlb"):
-      pkt.last_hop = str(self)
-      self.agg_pkt_queue.append(pkt)
-    elif (self.scheme == "backpressure"):
-      pkt.last_hop = str(self)
-      self.pkt_queue[pkt.dst].append(pkt)
 
 class SpineNode:
 

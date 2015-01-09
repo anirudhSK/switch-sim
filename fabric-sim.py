@@ -1,7 +1,10 @@
 #!  /usr/bin/python
 
 # A simulator to study fabric load balancing
-from simulator import *
+from simulator import PktGen, SpineNode, DstNode
+from vlb_srcnode import VlbSrcNode
+from backpressure_srcnode import BackPressureSrcNode
+import numpy.random
 import sys
 
 # Constants
@@ -18,7 +21,13 @@ LINE_RATE = NODES
 pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i) for i in range(NODES)]
 
 # Sources
-srcs = [SrcNode(t_line_rate = 1, t_num_dsts = NODES, t_scheme = scheme) for i in range(NODES)]
+srcs = []
+if (scheme == "vlb"):
+  srcs = [VlbSrcNode(t_line_rate = 1, t_num_dsts = NODES) for i in range(NODES)]
+elif (scheme == "backpressure"):
+  srcs = [BackPressureSrcNode(t_line_rate = 1, t_num_dsts = NODES, backpressure_M = M) for i in range(NODES)]
+else:
+  assert(False)
 
 # Spines
 spines = [SpineNode(t_line_rate = 1, t_num_dsts = NODES) for i in range(NODES)]
@@ -31,7 +40,7 @@ for current_tick in range(1, TICKS + 1):
   for i in range(NODES):
     pktgens[i].tick(srcs[i], current_tick)
   for x in numpy.random.permutation(srcs):
-    x.tick(spines, current_tick, backpressure_M = M)
+    x.tick(spines, current_tick)
   for x in numpy.random.permutation(spines):
     x.tick(dsts, current_tick)
   for i in range(NODES):
