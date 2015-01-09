@@ -1,7 +1,8 @@
 #!  /usr/bin/python
 
 # A simulator to study fabric load balancing
-from simulator import PktGen, SpineNode, DstNode
+from simulator import PktGen, DstNode
+from spine_node import SpineNode
 from vlb_srcnode import VlbSrcNode
 from backpressure_srcnode import BackPressureSrcNode
 import numpy.random
