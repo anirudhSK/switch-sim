@@ -1,6 +1,6 @@
 #!  /usr/bin/python
 
-# A simulator to study backpressure on leaf-spine topologies
+# A simulator to study fabric load balancing
 from simulator import *
 import sys
 

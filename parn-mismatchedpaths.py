@@ -2,6 +2,10 @@ from simulator import *
 import sys
 import numpy.random
 
+# Show that M-backpressure is worse than backpressure unless
+# there is a mismatch in hop counts across the two paths
+# Based on http://dl.acm.org/citation.cfm?id=2502369
+
 # Usage
 if (len(sys.argv) < 4):
   print sys.argv[0], "TICKS M num_interim_nodes"

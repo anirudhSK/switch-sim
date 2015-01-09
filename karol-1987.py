@@ -1,4 +1,8 @@
 #! /usr/bin/python
+
+# Simulator for Karol's 1987 paper:
+# Input vs Output queuing on a space-division switch
+
 # Setup
 import random
 import sys
