@@ -1,6 +1,6 @@
 import numpy.random
 import sys
-from simulator import SrcNode
+from src_node import SrcNode
 
 class BackPressureSrcNode(SrcNode):
 

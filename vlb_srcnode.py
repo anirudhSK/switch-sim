@@ -1,5 +1,5 @@
 import numpy.random
-from simulator import SrcNode
+from src_node import SrcNode
 
 class VlbSrcNode(SrcNode):
 
