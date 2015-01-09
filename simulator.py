@@ -13,14 +13,14 @@ class Packet:
 
 class PktGen:
 
-  def __init__(self, t_max_rate, t_load, t_num_dsts, t_source, t_target):
+  def __init__(self, t_max_rate, t_load, t_num_dsts, t_source, t_neighbor):
     assert(isinstance(t_max_rate, int))
     assert(t_load > 0 and t_load <= 1.0)
     self.max_rate  = t_max_rate
     self.load      = t_load
     self.num_dsts  = t_num_dsts
     self.src       = t_source
-    self.target    = t_target
+    self.neighbor    = t_neighbor
 
   def tick(self, current_tick):
     num_pkts = numpy.random.binomial(self.max_rate, self.load)
@@ -28,9 +28,9 @@ class PktGen:
     for i in range(num_pkts):
       dst  = numpy.random.random_integers(low = 0, high = self.num_dsts - 1)
       assert(dst >=0 and dst < self.num_dsts)
-      self.target.recv(Packet(creation_tick = current_tick,\
-                              source = self.src, \
-                              destination = dst))
+      self.neighbor.recv(Packet(creation_tick = current_tick,\
+                                source = self.src, \
+                                destination = dst))
 
 class SrcNode:
 
@@ -39,12 +39,12 @@ class SrcNode:
   def __str__(self):
     return "leaf"+str(self.id)
 
-  def __init__(self, t_line_rate, t_num_dsts, t_targets):
+  def __init__(self, t_line_rate, t_num_dsts, t_neighbors):
     assert(isinstance(t_line_rate, int))
     self.line_rate = t_line_rate
     self.id = SrcNode.object_count
     SrcNode.object_count += 1
-    self.targets = t_targets
+    self.neighbors = t_neighbors
 
 class SpineNode:
 
@@ -53,7 +53,7 @@ class SpineNode:
   def __str__(self):
     return "spine"+str(self.id) if self.name == "" else self.name
 
-  def __init__(self, t_line_rate, t_num_dsts, t_targets, t_name = ""):
+  def __init__(self, t_line_rate, t_num_dsts, t_neighbors, t_name = ""):
     assert(isinstance(t_line_rate, int))
     self.line_rate = t_line_rate
     self.pkt_queue = []
@@ -62,14 +62,14 @@ class SpineNode:
     SpineNode.object_count += 1
     for i in range(t_num_dsts):
       self.pkt_queue.append([])
-    self.targets = t_targets
+    self.neighbors = t_neighbors
 
   def tick(self, current_tick):
-    for target in numpy.random.permutation(self.targets):
+    for neighbor in numpy.random.permutation(self.neighbors):
       # Backpressure is trivial on spine nodes
       # Because queues at destinations are 0
-      for i in range(min(self.line_rate, len(self.pkt_queue[target.get_id()]))):
-        target.recv(self.pkt_queue[target.get_id()].pop(0))
+      for i in range(min(self.line_rate, len(self.pkt_queue[neighbor.get_id()]))):
+        neighbor.recv(self.pkt_queue[neighbor.get_id()].pop(0))
 
   def recv(self, pkt):
     pkt.last_hop = str(self)

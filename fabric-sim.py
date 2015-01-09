@@ -21,19 +21,19 @@ LINE_RATE = NODES
 dsts = [DstNode(t_line_rate = LINE_RATE, t_id = i) for i in range(NODES)]
 
 # Spines
-spines = [SpineNode(t_line_rate = 1, t_num_dsts = NODES, t_targets = dsts) for i in range(NODES)]
+spines = [SpineNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = dsts) for i in range(NODES)]
 
 # Sources
 srcs = []
 if (scheme == "vlb"):
-  srcs = [VlbSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_targets = spines) for i in range(NODES)]
+  srcs = [VlbSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines) for i in range(NODES)]
 elif (scheme == "backpressure"):
-  srcs = [BackPressureSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_targets = spines, backpressure_M = M) for i in range(NODES)]
+  srcs = [BackPressureSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines, backpressure_M = M) for i in range(NODES)]
 else:
   assert(False)
 
 # Packet generators
-pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_target = srcs[i]) for i in range(NODES)]
+pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_neighbor = srcs[i]) for i in range(NODES)]
 
 # Simulate
 for current_tick in range(1, TICKS + 1):
