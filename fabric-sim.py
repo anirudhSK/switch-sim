@@ -17,32 +17,32 @@ M = int(sys.argv[6])
 LINE_RATE = NODES
 
 # Nodes
-# Packet generators
-pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i) for i in range(NODES)]
+# Destinations
+dsts = [DstNode(t_line_rate = LINE_RATE, t_id = i) for i in range(NODES)]
+
+# Spines
+spines = [SpineNode(t_line_rate = 1, t_num_dsts = NODES, t_targets = dsts) for i in range(NODES)]
 
 # Sources
 srcs = []
 if (scheme == "vlb"):
-  srcs = [VlbSrcNode(t_line_rate = 1, t_num_dsts = NODES) for i in range(NODES)]
+  srcs = [VlbSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_targets = spines) for i in range(NODES)]
 elif (scheme == "backpressure"):
-  srcs = [BackPressureSrcNode(t_line_rate = 1, t_num_dsts = NODES, backpressure_M = M) for i in range(NODES)]
+  srcs = [BackPressureSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_targets = spines, backpressure_M = M) for i in range(NODES)]
 else:
   assert(False)
 
-# Spines
-spines = [SpineNode(t_line_rate = 1, t_num_dsts = NODES) for i in range(NODES)]
-
-# Destinations
-dsts = [DstNode(t_line_rate = LINE_RATE, t_id = i) for i in range(NODES)]
+# Packet generators
+pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_target = srcs[i]) for i in range(NODES)]
 
 # Simulate
 for current_tick in range(1, TICKS + 1):
   for i in range(NODES):
-    pktgens[i].tick(srcs[i], current_tick)
+    pktgens[i].tick(current_tick)
   for x in numpy.random.permutation(srcs):
-    x.tick(spines, current_tick)
+    x.tick(current_tick)
   for x in numpy.random.permutation(spines):
-    x.tick(dsts, current_tick)
+    x.tick(current_tick)
   for i in range(NODES):
     dsts[i].tick(current_tick)
 

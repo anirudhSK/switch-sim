@@ -4,15 +4,15 @@ from simulator import SrcNode
 
 class BackPressureSrcNode(SrcNode):
 
-  def __init__(self, t_line_rate, t_num_dsts, backpressure_M):
-    SrcNode.__init__(self, t_line_rate, t_num_dsts)
+  def __init__(self, t_line_rate, t_num_dsts, t_targets, backpressure_M):
+    SrcNode.__init__(self, t_line_rate, t_num_dsts, t_targets)
     self.pkt_queue = []
     self.backpressure_M = backpressure_M
     for i in range(0, t_num_dsts):
       self.pkt_queue.append([])
 
-  def tick(self, targets, current_tick):
-    for target in numpy.random.permutation(targets):
+  def tick(self, current_tick):
+    for target in numpy.random.permutation(self.targets):
       # Find destination with maximum backpressure
       max_backpressure = -sys.maxint - 1
       argmax_list = []
