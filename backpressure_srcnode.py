@@ -1,4 +1,5 @@
 import numpy.random
+import sys
 from simulator import SrcNode
 
 class BackPressureSrcNode(SrcNode):
@@ -27,7 +28,8 @@ class BackPressureSrcNode(SrcNode):
       argmax = numpy.random.choice(argmax_list)
 
       if (max_backpressure >= self.backpressure_M):
-        assert(backpressure_M <= 0 or len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
+        assert(self.backpressure_M <= 0 or len(target.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
+
         for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
           target.recv(self.pkt_queue[argmax].pop(0))
 
