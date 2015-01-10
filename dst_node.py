@@ -30,6 +30,7 @@ class DstNode:
         self.path_stats[pkt.last_hop] = 1
       else:
         self.path_stats[pkt.last_hop] += 1
+    assert(len(self.pkt_queue) == 0)
 
   def dump_stats(self):
     total = 0
