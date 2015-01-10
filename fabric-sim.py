@@ -4,8 +4,10 @@
 from pkt_gen import PktGen
 from dst_node import DstNode
 from spine_node import SpineNode
+from detail_spinenode import DeTailSpineNode
 from vlb_srcnode import VlbSrcNode
 from backpressure_srcnode import BackPressureSrcNode
+from detail_srcnode import DeTailSrcNode
 import numpy.random
 import sys
 
@@ -23,7 +25,13 @@ LINE_RATE = NODES
 dsts = [DstNode(t_line_rate = LINE_RATE, t_id = i) for i in range(NODES)]
 
 # Spines
-spines = [SpineNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = dsts) for i in range(NODES)]
+spines = []
+if (scheme == "vlb" or scheme == "backpressure"):
+  spines = [SpineNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = dsts) for i in range(NODES)]
+elif (scheme == "detail"):
+  spines = [DeTailSpineNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = dsts) for i in range(NODES)]
+else:
+  assert(False)
 
 # Sources
 srcs = []
@@ -31,6 +39,8 @@ if (scheme == "vlb"):
   srcs = [VlbSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines) for i in range(NODES)]
 elif (scheme == "backpressure"):
   srcs = [BackPressureSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines, backpressure_M = M) for i in range(NODES)]
+elif (scheme == "detail"):
+  srcs = [DeTailSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines) for i in range(NODES)]
 else:
   assert(False)
 
