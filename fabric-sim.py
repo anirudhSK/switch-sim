@@ -22,30 +22,30 @@ LINE_RATE = NODES
 
 # Nodes
 # Destinations
-dsts = [DstNode(t_line_rate = LINE_RATE, t_id = i) for i in range(NODES)]
+dsts = [DstNode(t_line_rate = 2 * LINE_RATE, t_id = i) for i in range(NODES)]
 
 # Spines
 spines = []
 if (scheme == "vlb" or scheme == "backpressure"):
-  spines = [SpineNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = dsts) for i in range(NODES)]
+  spines = [SpineNode(t_line_rate = 2, t_num_dsts = NODES, t_neighbors = dsts) for i in range(NODES)]
 elif (scheme == "detail"):
-  spines = [DeTailSpineNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = dsts) for i in range(NODES)]
+  spines = [DeTailSpineNode(t_line_rate = 2, t_num_dsts = NODES, t_neighbors = dsts) for i in range(NODES)]
 else:
   assert(False)
 
 # Sources
 srcs = []
 if (scheme == "vlb"):
-  srcs = [VlbSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines) for i in range(NODES)]
+  srcs = [VlbSrcNode(t_line_rate = 2, t_num_dsts = NODES, t_neighbors = spines) for i in range(NODES)]
 elif (scheme == "backpressure"):
-  srcs = [BackPressureSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines, backpressure_M = M) for i in range(NODES)]
+  srcs = [BackPressureSrcNode(t_line_rate = 2, t_num_dsts = NODES, t_neighbors = spines, backpressure_M = M) for i in range(NODES)]
 elif (scheme == "detail"):
-  srcs = [DeTailSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines, pause_threshold = int(sys.argv[7]), resume_threshold = int(sys.argv[8]), load_balance_threshold = int(sys.argv[9])) for i in range(NODES)]
+  srcs = [DeTailSrcNode(t_line_rate = 2, t_num_dsts = NODES, t_neighbors = spines, pause_threshold = int(sys.argv[7]), resume_threshold = int(sys.argv[8]), load_balance_threshold = int(sys.argv[9])) for i in range(NODES)]
 else:
   assert(False)
 
 # Packet generators
-pktgens = [PktGen(t_line_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_neighbors = [srcs[i]]) for i in range(NODES)]
+pktgens = [PktGen(t_line_rate = 2 * LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_neighbors = [srcs[i]]) for i in range(NODES)]
 
 # Visualize topology
 dot_script = "digraph topology {node [shape = box ];\n"
@@ -65,7 +65,6 @@ for node in pktgens + srcs + spines:
                   " [label = " + edge_label + "];\n"
 dot_script += "}"
 print dot_script
-
 
 # Simulate
 for current_tick in range(1, TICKS + 1):
