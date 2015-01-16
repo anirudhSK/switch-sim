@@ -11,12 +11,13 @@ class DeTailSrcNode(SrcNode):
 
   def tick(self, current_tick):
     for neighbor in numpy.random.permutation(self.neighbors):
-      if ((len(self.neighbor_queue[neighbor]) > 0) and (neighbor.input_counters[self.id] < DeTailSrcNode.PAUSE_THRESHOLD)):
-        # send packets to neighbor only if:
-        # -- have packets for that neighbor
-        # -- that neighbor isn't overloaded with your packets
-        #    (i.e. your link to the neighbor is blocked)
-        neighbor.recv(self.neighbor_queue[neighbor].pop(0))
+      for i in range(self.line_rate):
+        if ((len(self.neighbor_queue[neighbor]) > 0) and (neighbor.input_counters[self.id] < DeTailSrcNode.PAUSE_THRESHOLD)):
+          # send packets to neighbor only if:
+          # -- have packets for that neighbor
+          # -- that neighbor isn't overloaded with your packets
+          #    (i.e. your link to the neighbor is blocked)
+          neighbor.recv(self.neighbor_queue[neighbor].pop(0))
 
   def recv(self, pkt):
     pkt.last_hop = str(self)
