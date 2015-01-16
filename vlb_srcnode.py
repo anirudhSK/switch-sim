@@ -10,8 +10,9 @@ class VlbSrcNode(SrcNode):
   def tick(self, current_tick):
     assert(len(self.agg_pkt_queue) <= self.line_rate * len(self.neighbors));
     for neighbor in numpy.random.permutation(self.neighbors):
-      if (len(self.agg_pkt_queue) > 0) :
-        neighbor.recv(self.agg_pkt_queue.pop(0))
+      for i in range(self.line_rate):
+        if (len(self.agg_pkt_queue) > 0) :
+          neighbor.recv(self.agg_pkt_queue.pop(0))
     assert(len(self.agg_pkt_queue) == 0)
 
   def recv(self, pkt):
