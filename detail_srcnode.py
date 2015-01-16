@@ -3,6 +3,7 @@ from src_node import SrcNode
 
 class DeTailSrcNode(SrcNode):
   PAUSE_THRESHOLD = 5
+  RESUME_THRESHOLD = 1
   def __init__(self, t_line_rate, t_num_dsts, t_neighbors):
     SrcNode.__init__(self, t_line_rate, t_num_dsts, t_neighbors)
     self.neighbor_queue = dict()
@@ -12,11 +13,14 @@ class DeTailSrcNode(SrcNode):
   def tick(self, current_tick):
     for neighbor in numpy.random.permutation(self.neighbors):
       for i in range(self.line_rate):
-        if ((len(self.neighbor_queue[neighbor]) > 0) and (neighbor.input_counters[self.id] < DeTailSrcNode.PAUSE_THRESHOLD)):
+        if ((len(self.neighbor_queue[neighbor]) > 0) and \
+            (neighbor.input_counters[self.id] < DeTailSrcNode.RESUME_THRESHOLD)):
           # send packets to neighbor only if:
           # -- have packets for that neighbor
           # -- that neighbor isn't overloaded with your packets
-          #    (i.e. your link to the neighbor is blocked)
+          #    (i.e. your link to the neighbor is not blocked)
+          #    (i.e. the neighbor's count of self's packets has fallen
+          #     below the resume threshold)
           neighbor.recv(self.neighbor_queue[neighbor].pop(0))
 
   def recv(self, pkt):
