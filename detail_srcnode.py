@@ -7,6 +7,7 @@ class DeTailSrcNode(SrcNode):
     self.neighbor_queue = dict()
     self.pause_threshold = pause_threshold
     self.resume_threshold = resume_threshold
+    assert(self.resume_threshold <= self.pause_threshold)
     for neighbor in self.neighbors:
       self.neighbor_queue[neighbor] = []
 
