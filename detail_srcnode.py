@@ -2,11 +2,11 @@ import numpy.random
 from src_node import SrcNode
 
 class DeTailSrcNode(SrcNode):
-  PAUSE_THRESHOLD = 5
-  RESUME_THRESHOLD = 2
-  def __init__(self, t_line_rate, t_num_dsts, t_neighbors):
+  def __init__(self, t_line_rate, t_num_dsts, t_neighbors, pause_threshold = 5, resume_threshold = 2):
     SrcNode.__init__(self, t_line_rate, t_num_dsts, t_neighbors)
     self.neighbor_queue = dict()
+    self.pause_threshold = pause_threshold
+    self.resume_threshold = resume_threshold
     for neighbor in self.neighbors:
       self.neighbor_queue[neighbor] = []
 
@@ -14,7 +14,7 @@ class DeTailSrcNode(SrcNode):
     for neighbor in numpy.random.permutation(self.neighbors):
       for i in range(self.line_rate):
         if ((len(self.neighbor_queue[neighbor]) > 0) and \
-            (neighbor.input_counters[self.id] < DeTailSrcNode.RESUME_THRESHOLD)):
+            (neighbor.input_counters[self.id] < self.resume_threshold)):
           # send packets to neighbor only if:
           # -- have packets for that neighbor
           # -- that neighbor isn't overloaded with your packets
@@ -27,7 +27,7 @@ class DeTailSrcNode(SrcNode):
     pkt.last_hop = str(self)
     preferred_neighbors  = []
     for neighbor in self.neighbors:
-      if (neighbor.input_counters[self.id] < DeTailSrcNode.PAUSE_THRESHOLD):
+      if (neighbor.input_counters[self.id] < self.pause_threshold):
         # Adaptive load balancing
         # In practice, this is the sequence of events
         # 1. The neighbor has too many packets from self.
