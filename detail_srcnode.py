@@ -3,7 +3,7 @@ from src_node import SrcNode
 
 class DeTailSrcNode(SrcNode):
   PAUSE_THRESHOLD = 5
-  RESUME_THRESHOLD = 1
+  RESUME_THRESHOLD = 2
   def __init__(self, t_line_rate, t_num_dsts, t_neighbors):
     SrcNode.__init__(self, t_line_rate, t_num_dsts, t_neighbors)
     self.neighbor_queue = dict()
