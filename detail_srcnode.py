@@ -1,6 +1,17 @@
 import numpy.random
 from src_node import SrcNode
 
+# Maintain a state variable to determine
+# when links get paused and unpaused
+# Independently, use local queue occupancies
+# to actually load balance packets across
+# different links
+# Basically, a pause and a resume threshold
+# But, no propagation delay in pausing
+# This is closer and closer to DeTail.
+# Then, we can actually check the asymmetry
+# hypothesis
+ 
 class DeTailSrcNode(SrcNode):
   def __init__(self, t_line_rate, t_num_dsts, t_neighbors, pause_threshold = 5, resume_threshold = 2):
     SrcNode.__init__(self, t_line_rate, t_num_dsts, t_neighbors)
