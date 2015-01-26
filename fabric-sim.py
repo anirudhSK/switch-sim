@@ -40,7 +40,7 @@ if (scheme == "vlb"):
 elif (scheme == "backpressure"):
   srcs = [BackPressureSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines, backpressure_M = M) for i in range(NODES)]
 elif (scheme == "detail"):
-  srcs = [DeTailSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines, pause_threshold = int(sys.argv[7]), resume_threshold = int(sys.argv[8])) for i in range(NODES)]
+  srcs = [DeTailSrcNode(t_line_rate = 1, t_num_dsts = NODES, t_neighbors = spines, pause_threshold = int(sys.argv[7]), resume_threshold = int(sys.argv[8]), load_balance_threshold = int(sys.argv[9])) for i in range(NODES)]
 else:
   assert(False)
 
