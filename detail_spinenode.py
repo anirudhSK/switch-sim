@@ -16,7 +16,7 @@ class DeTailSpineNode(SpineNode):
   def tick(self, current_tick):
     for neighbor in numpy.random.permutation(self.neighbors):
       # No choice, only one path to neighbor
-      for i in range(min(self.line_rate, len(self.pkt_queue[neighbor.get_id()]))):
+      for i in range(min(self.line_rate[neighbor], len(self.pkt_queue[neighbor.get_id()]))):
         next_pkt = self.pkt_queue[neighbor.get_id()].pop(0)
         neighbor.recv(next_pkt)
         self.input_counters[next_pkt.src] -= 1
