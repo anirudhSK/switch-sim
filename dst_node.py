@@ -31,6 +31,9 @@ class DstNode:
       else:
         self.path_stats[pkt.last_hop] += 1
     assert(len(self.pkt_queue) == 0)
+    # Periodically dump stats
+    if (current_tick % 1000 == 0):
+      self.dump_stats()
 
   def dump_stats(self):
     total = 0
