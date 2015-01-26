@@ -47,9 +47,8 @@ else:
 # Packet generators
 pktgens = [PktGen(t_line_rate = 2 * LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_neighbors = [srcs[i]]) for i in range(NODES)]
 
-# Simulate asymmetry
-for dst in dsts:
-  spines[NODES - 1].modify_line_rate(new_line_rate = 1, neighbor = dst)
+# Simulate asymmetry to one destination alone
+spines[NODES - 1].modify_line_rate(new_line_rate = 1, neighbor = dsts[-1])
 
 # Visualize topology
 dot_script = "digraph topology {node [shape = box ];\n"
