@@ -56,6 +56,13 @@ for i in range(len(node_types)):
     dot_script += str(node_list[j]) + \
                   " [pos = \"" + str(i * 100) + "," + str(j * 100) + "!\"]" + \
                   " [label = " + str(node_list[j]) + "];\n"
+
+# Edges
+for node in pktgens + srcs + spines:
+  for neighbor in node.neighbors:
+    edge_label = str(node.line_rate[neighbor]) if (node not in pktgens) else str(node.line_rate[neighbor] * node.load)
+    dot_script += str(node) + "->" + str(neighbor) + \
+                  " [label = " + edge_label + "];\n"
 dot_script += "}"
 print dot_script
 
