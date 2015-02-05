@@ -45,7 +45,7 @@ else:
   assert(False)
 
 # Packet generators
-pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_neighbor = srcs[i]) for i in range(NODES)]
+pktgens = [PktGen(t_line_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_neighbors = [srcs[i]]) for i in range(NODES)]
 
 # Visualize topology
 dot_script = "digraph topology {node [shape = box ];\n"
