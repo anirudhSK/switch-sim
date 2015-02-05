@@ -34,7 +34,9 @@ class PktGen:
     assert(num_pkts <= self.line_rate[the_neighbor])
     for i in range(num_pkts):
       dst  = numpy.random.random_integers(low = 0, high = self.num_dsts - 1)
-      assert(dst >=0 and dst < self.num_dsts)
+      while (dst == self.src):
+        dst  = numpy.random.random_integers(low = 0, high = self.num_dsts - 1)
+      assert(dst >=0 and dst < self.num_dsts and dst != self.src)
       self.neighbor.recv(Packet(creation_tick = current_tick,\
                                 source = self.src, \
                                 destination = dst))
