@@ -54,6 +54,7 @@ for i in range(len(node_types)):
   node_list = node_types[i]
   for j in range(len(node_list)):
     dot_script += str(node_list[j]) + \
+                  " [pos = \"" + str(i * 100) + "," + str(j * 100) + "!\"]" + \
                   " [label = " + str(node_list[j]) + "];\n"
 dot_script += "}"
 print dot_script
