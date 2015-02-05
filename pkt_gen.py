@@ -40,7 +40,7 @@ class PktGen:
       while (dst == self.src):
         dst  = numpy.random.random_integers(low = 0, high = self.num_dsts - 1)
       assert(dst >=0 and dst < self.num_dsts and dst != self.src)
-      self.neighbor.recv(Packet(creation_tick = current_tick,\
+      the_neighbor.recv(Packet(creation_tick = current_tick,\
                                 source = self.src, \
                                 destination = dst))
 
