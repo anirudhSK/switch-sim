@@ -9,6 +9,9 @@ class DstNode:
     self.del_stats = dict()
     self.path_stats = dict()
 
+  def __str__(self):
+    return "Dst" + str(self.id)
+
   def recv(self, pkt):
     assert(pkt.dst == self.id)
     self.pkt_queue.append(pkt)

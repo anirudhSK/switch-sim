@@ -22,6 +22,9 @@ class PktGen:
     self.src       = t_source
     self.neighbor    = t_neighbor
 
+  def __str__(self):
+    return "PktGen" + str(self.src) + ""
+
   def tick(self, current_tick):
     num_pkts = numpy.random.binomial(self.max_rate, self.load)
     assert(num_pkts <= self.max_rate)
