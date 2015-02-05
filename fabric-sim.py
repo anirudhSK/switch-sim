@@ -49,9 +49,12 @@ pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_s
 
 # Visualize topology
 dot_script = "digraph topology {node [shape = box ];\n"
-for node in pktgens + srcs + spines + dsts:
-  dot_script += str(node) + \
-                " [label = " + str(node) + "];\n"
+node_types = [pktgens, srcs, spines, dsts]
+for i in range(len(node_types)):
+  node_list = node_types[i]
+  for j in range(len(node_list)):
+    dot_script += str(node_list[j]) + \
+                  " [label = " + str(node_list[j]) + "];\n"
 dot_script += "}"
 print dot_script
 
