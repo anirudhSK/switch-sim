@@ -47,6 +47,15 @@ else:
 # Packet generators
 pktgens = [PktGen(t_max_rate = LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_neighbor = srcs[i]) for i in range(NODES)]
 
+# Visualize topology
+dot_script = "digraph topology {node [shape = box ];\n"
+for node in pktgens + srcs + spines + dsts:
+  dot_script += str(node) + \
+                " [label = " + str(node) + "];\n"
+dot_script += "}"
+print dot_script
+
+
 # Simulate
 for current_tick in range(1, TICKS + 1):
   for i in range(NODES):
