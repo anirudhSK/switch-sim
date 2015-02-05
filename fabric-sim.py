@@ -47,6 +47,10 @@ else:
 # Packet generators
 pktgens = [PktGen(t_line_rate = 2 * LINE_RATE, t_load = LOAD, t_num_dsts = NODES, t_source = i, t_neighbors = [srcs[i]]) for i in range(NODES)]
 
+# Allow only first node to send
+for i in range(1, NODES):
+  pktgens[i].quench()
+
 # Simulate asymmetry to one destination alone
 spines[NODES - 1].modify_line_rate(new_line_rate = 1, neighbor = dsts[-1])
 

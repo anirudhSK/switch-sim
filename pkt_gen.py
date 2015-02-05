@@ -44,3 +44,6 @@ class PktGen:
                                 source = self.src, \
                                 destination = dst))
 
+  def quench(self):
+    for neighbor in self.neighbors:
+      self.line_rate[neighbor] = 0
