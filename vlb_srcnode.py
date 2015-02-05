@@ -11,7 +11,7 @@ class VlbSrcNode(SrcNode):
 
   def tick(self, current_tick):
     for neighbor in numpy.random.permutation(self.neighbors):
-      for i in range(self.line_rate):
+      for i in range(self.line_rate[neighbor]):
         if (len(self.neighbor_queue[neighbor]) > 0) :
           neighbor.recv(self.neighbor_queue[neighbor].pop(0))
 

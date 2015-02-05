@@ -30,7 +30,7 @@ class BackPressureSrcNode(SrcNode):
       if (max_backpressure >= self.backpressure_M):
         assert(self.backpressure_M <= 0 or len(neighbor.pkt_queue[argmax]) < len(self.pkt_queue[argmax]))
 
-        for i in range(min(len(self.pkt_queue[argmax]), self.line_rate)):
+        for i in range(min(len(self.pkt_queue[argmax]), self.line_rate[neighbor])):
           neighbor.recv(self.pkt_queue[argmax].pop(0))
 
   def recv(self, pkt):
