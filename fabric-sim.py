@@ -74,4 +74,4 @@ for current_tick in range(1, TICKS + 1):
 # Output stats
 for i in range(NODES):
   dsts[i].dump_stats()
-print "Expected delay according to Karol's 1987 paper", (((NODES - 1) * 1.0) / NODES) * 0.5 * (1.0 / LINE_RATE) * (LOAD / (1 - LOAD))
+print >> sys.stderr, "Expected delay according to Karol's 1987 paper", (((NODES - 1) * 1.0) / NODES) * 0.5 * (1.0 / LINE_RATE) * (LOAD / (1 - LOAD))

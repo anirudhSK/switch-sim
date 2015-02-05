@@ -1,3 +1,4 @@
+import sys
 class DstNode:
 
   def __init__(self, t_line_rate, t_id):
@@ -41,11 +42,11 @@ class DstNode:
   def dump_stats(self):
     total = 0
     for src in self.pkt_stats:
-      print "src", src, "dst", self.id, "pkts", self.pkt_stats[src], "del", self.del_stats[src] * 1.0 / self.pkt_stats[src]
+      print >> sys.stderr, "src", src, "dst", self.id, "pkts", self.pkt_stats[src], "del", self.del_stats[src] * 1.0 / self.pkt_stats[src]
       total += self.pkt_stats[src]
     for path in self.path_stats:
-      print "last_hop", path, "pkts", self.path_stats[path]
-    print "total", total
+      print >> sys.stderr,  "last_hop", path, "pkts", self.path_stats[path]
+    print >> sys.stderr, "total", total
 
   def get_id(self):
     return self.id
