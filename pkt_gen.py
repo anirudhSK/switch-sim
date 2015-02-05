@@ -30,7 +30,10 @@ class PktGen:
 
   def tick(self, current_tick):
     the_neighbor = self.neighbors[0]
-    num_pkts = numpy.random.binomial(self.line_rate[the_neighbor], self.load)
+    num_pkts = 0
+    if (self.line_rate[the_neighbor] != 0):
+      assert(self.line_rate[the_neighbor] > 0)
+      num_pkts = numpy.random.binomial(self.line_rate[the_neighbor], self.load)
     assert(num_pkts <= self.line_rate[the_neighbor])
     for i in range(num_pkts):
       dst  = numpy.random.random_integers(low = 0, high = self.num_dsts - 1)
