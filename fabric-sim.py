@@ -51,9 +51,6 @@ pktgens = [PktGen(t_line_rate = 2 * LINE_RATE, t_load = LOAD, t_num_dsts = NODES
 for i in range(1, NODES):
   pktgens[i].quench()
 
-# Simulate asymmetry to one destination alone
-spines[NODES - 1].modify_line_rate(new_line_rate = 1, neighbor = dsts[-1])
-
 # Visualize topology
 dot_script = "digraph topology {node [shape = box ];\n"
 node_types = [pktgens, srcs, spines, dsts]
