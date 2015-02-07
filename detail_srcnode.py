@@ -3,12 +3,11 @@ from src_node import SrcNode
 
 class DeTailSrcNode(SrcNode):
   def __init__(self, t_line_rate, t_num_dsts, t_neighbors, \
-               pause_threshold = 5, resume_threshold = 2, load_balance_threshold = 10):
+               pause_threshold = 5, resume_threshold = 2):
     SrcNode.__init__(self, t_line_rate, t_num_dsts, t_neighbors)
     self.neighbor_queue = dict()
     self.pause_threshold = pause_threshold
     self.resume_threshold = resume_threshold
-    self.load_balance_threshold = load_balance_threshold
     self.paused = dict()
     assert(self.resume_threshold <= self.pause_threshold)
     for neighbor in self.neighbors:
@@ -35,14 +34,7 @@ class DeTailSrcNode(SrcNode):
 
   def recv(self, pkt):
     pkt.last_hop = str(self)
-    preferred_neighbors  = []
-    for neighbor in self.neighbors:
-      if (len(self.neighbor_queue[neighbor]) < self.load_balance_threshold):
-        preferred_neighbors.append(neighbor)
 
-    if (len(preferred_neighbors) > 0):
-      chosen = numpy.random.choice(preferred_neighbors) 
-      self.neighbor_queue[chosen].append(pkt)
-    else:
-      chosen = numpy.random.choice(self.neighbors)
-      self.neighbor_queue[chosen].append(pkt)
+    # Pick the queue with smallest size
+    chosen = min(self.neighbors, key = lambda neighbor : len(self.neighbor_queue[neighbor]))
+    self.neighbor_queue[chosen].append(pkt)
